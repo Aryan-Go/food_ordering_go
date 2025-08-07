@@ -4,7 +4,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"github/aryan-go/food_ordering_go/package/middlewares"
+	"github/aryan-go/food_ordering_go/package/models"
+	"log"
 	"net/http"
+	"strconv"
+	// "mux"
+	"golang.org/x/crypto/bcrypt"
 )
 
 // ! here we will be writing the logic for routing fo the user
@@ -14,7 +19,6 @@ type User struct {
 	Email      string `json:"email"`
 	Password   string `json:"password"`
 	Repassword string `json:"repassword"`
-	Id         string `json:"id"`
 	Role       string `json:"role"`
 }
 
@@ -46,7 +50,7 @@ func Render_signup(w http.ResponseWriter, r *http.Request) {
 		}
 		json.NewEncoder(w).Encode(errorAPi)
 	} else {
-		if len(newUser.Name) == 0 || len(newUser.Email) == 0 || len(newUser.Password) == 0 || len(newUser.Repassword) == 0 || len(newUser.Id) == 0 || len(newUser.Role) == 0 {
+		if len(newUser.Name) == 0 || len(newUser.Email) == 0 || len(newUser.Password) == 0 || len(newUser.Repassword) == 0 || len(newUser.Role) == 0 {
 			var errorAPi = Error{
 				Code:    http.StatusBadRequest,
 				Message: "Your input is invalid or empty",
@@ -69,7 +73,17 @@ func Render_signup(w http.ResponseWriter, r *http.Request) {
 				if middlewares.Email_verification(newUser.Email) {
 					if middlewares.Password_verification(newUser.Password) {
 						if newUser.Password == newUser.Repassword {
+							password := []byte(newUser.Password)
+							hashedPassword, err := bcrypt.GenerateFromPassword(password, bcrypt.DefaultCost)
+							password2 := []byte(newUser.Repassword)
+							hashedPassword2, _ := bcrypt.GenerateFromPassword(password2, bcrypt.DefaultCost)
+							if err != nil {
+								log.Fatal("There is some error in encryption : ", err)
+							}
+							newUser.Password = string(hashedPassword)
+							newUser.Repassword = string(hashedPassword2)
 							users = append(users, newUser)
+							models.Add_users(newUser.Email , newUser.Name , newUser.Password , newUser.Role)
 							fmt.Fprint(w, "Data has been added successfully")
 						} else {
 							var errorAPi = Error{
@@ -101,6 +115,7 @@ func Render_signup(w http.ResponseWriter, r *http.Request) {
 func Getdata_signup(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
+	users := models.Get_all_users()
 	if len(users) != 0 {
 		err := json.NewEncoder(w).Encode(&users)
 		if err != nil {
@@ -130,7 +145,8 @@ func Render_login(w http.ResponseWriter, r *http.Request) {
 	} else {
 		for _, user := range users {
 			if user.Email == loginUser.Email {
-				if user.Password == loginUser.Password {
+				err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(loginUser.Password))
+				if err == nil {
 					jwtToken, err := middlewares.Create_token(user.Email, user.Role)
 					if err != nil {
 						fmt.Fprintf(w, "There is some error in generating jwt token")
@@ -155,6 +171,18 @@ func Render_login(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func Getiddata_signup(w http.ResponseWriter, r *http.Request){
+	id := r.PathValue("id")
+	fmt.Println(id)
+	num,err := strconv.Atoi(id)
+	fmt.Println(num)
+	if(err != nil){
+		fmt.Fprintf(w,err.Error())
+	}
+	user := models.Get_users_id(num)
+	json.NewEncoder(w).Encode(&user)
+}
+
 func Auth_redirection(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	jwtToken := r.Header.Get("Authorization")
@@ -167,7 +195,7 @@ func Auth_redirection(w http.ResponseWriter, r *http.Request) {
 		} else if role == "admin" {
 			http.Redirect(w, r, "/admin", http.StatusSeeOther)
 		} else {
-			fmt.Fprintf(w, "The role is not valid please check once again")
+			fmt.Fprintf(w, "This is a protected route and you are not allowed")
 		}
 	} else {
 		fmt.Fprintf(w, "Your jwt token has expired please login again")
@@ -175,11 +203,43 @@ func Auth_redirection(w http.ResponseWriter, r *http.Request) {
 }
 
 func Customer_render(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Welcome customer")
+	w.Header().Set("Content-Type", "application/json")
+	jwtToken := r.Header.Get("Authorization")
+	state, _, role := middlewares.Verify_token(jwtToken)
+	fmt.Println(role)
+	if !state {
+		fmt.Fprintf(w, "Your jwt token has expired please login again")
+	} else if role != "customer" {
+		fmt.Fprintf(w, "This is a protected route and you are not allowed")
+	}else{
+		fmt.Fprintf(w, "Welcome customer")
+	}
 }
 func Chef_render(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Welcome Chef")
+	w.Header().Set("Content-Type", "application/json")
+	jwtToken := r.Header.Get("Authorization")
+	state, _, role := middlewares.Verify_token(jwtToken)
+	if !state {
+		fmt.Fprintf(w, "Your jwt token has expired please login again")
+	} else if role != "customer" {
+		fmt.Fprintf(w, "This is a protected route and you are not allowed")
+	}else{
+		fmt.Fprintf(w, "Welcome chef")
+	}
 }
 func Admin_render(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Welcome Admin")
+	w.Header().Set("Content-Type", "application/json")
+	jwtToken := r.Header.Get("Authorization")
+	state, _, role := middlewares.Verify_token(jwtToken)
+	if !state {
+		fmt.Fprintf(w, "Your jwt token has expired please login again")
+	} else if role != "customer" {
+		fmt.Fprintf(w, "This is a protected route and you are not allowed")
+	}else{
+		fmt.Fprintf(w, "Welcome admin")
+	}
+}
+
+func Logout_handler(){
+	
 }

@@ -1,6 +1,6 @@
 -- ! Here write all the commands for the database
-CREATE DATABASE food;
-USE food;
+CREATE DATABASE food_go;
+USE food_go;
 CREATE TABLE user(
     user_id INT PRIMARY KEY AUTO_INCREMENT,
     email VARCHAR(200) NOT NULL ,
