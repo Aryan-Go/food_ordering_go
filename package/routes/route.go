@@ -13,10 +13,13 @@ func All_routes() *mux.Router {
 	r.HandleFunc("/signup", controllers.Getdata_signup).Methods("POST")
 	// r.HandleFunc("/signup/{id}", controllers.Getiddata_signup).Methods("POST")
 	r.HandleFunc("/login", controllers.Render_login).Methods("GET")
-	r.HandleFunc("/logout" , controllers.Logout_handler).Methods("GET")
+	// r.HandleFunc("/logout" , controllers.Logout_handler).Methods("GET")
 	r.HandleFunc("/auth_redirect" , controllers.Auth_redirection).Methods("POST")
 	r.HandleFunc("/customer" , controllers.Customer_render).Methods("GET")
 	r.HandleFunc("/chef" , controllers.Chef_render).Methods("GET")
 	r.HandleFunc("/admin" , controllers.Admin_render).Methods("GET")
+	r.HandleFunc("/cus_chef" , controllers.Customer_chef).Methods("GET")
+	r.HandleFunc("/menu_show" , controllers.Menu_render).Methods("GET")
+	r.HandleFunc("/food_items_added" , controllers.Foof_items_added).Methods("POST")
 	return r
 }

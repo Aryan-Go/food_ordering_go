@@ -57,16 +57,11 @@ func Render_signup(w http.ResponseWriter, r *http.Request) {
 			}
 			json.NewEncoder(w).Encode(errorAPi)
 		} else {
-			var check bool
-			for _, value := range users {
-				if value.Email == newUser.Email {
-					check = true
-				}
-			}
-			if check {
+			check := models.Find_email(newUser.Email)
+			if !check {
 				var errorAPi = Error{
 					Code:    http.StatusBadRequest,
-					Message: "Email id already present please try some other or login",
+					Message: "Email id already present please try to login",
 				}
 				json.NewEncoder(w).Encode(errorAPi)
 			} else {
@@ -143,15 +138,17 @@ func Render_login(w http.ResponseWriter, r *http.Request) {
 		}
 		json.NewEncoder(w).Encode(errorAPi)
 	} else {
-		for _, user := range users {
-			if user.Email == loginUser.Email {
-				err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(loginUser.Password))
+		var counter int = 0;
+			if (models.Find_email(loginUser.Email)) {
+				password,role := models.Find_password(loginUser.Email)
+				fmt.Println(password , role , loginUser.Password)
+				err = bcrypt.CompareHashAndPassword([]byte(password), []byte(loginUser.Password))
 				if err == nil {
-					jwtToken, err := middlewares.Create_token(user.Email, user.Role)
+					jwtToken, err := middlewares.Create_token(loginUser.Email, role)
 					if err != nil {
 						fmt.Fprintf(w, "There is some error in generating jwt token")
 					} else {
-						fmt.Fprintf(w, "You are successfullt logged in %v", jwtToken)
+						fmt.Fprintf(w, "You are successfully logged in %v", jwtToken)
 					}
 				} else {
 					var errorAPi = Error{
@@ -161,12 +158,13 @@ func Render_login(w http.ResponseWriter, r *http.Request) {
 					json.NewEncoder(w).Encode(errorAPi)
 				}
 			} else {
-				var errorAPi = Error{
-					Code:    http.StatusForbidden,
-					Message: "Your email is wrong for logging in please check once",
+				if(counter == len(users)){
+					var errorAPi = Error{
+						Code:    http.StatusForbidden,
+						Message: "Your email is wrong for logging in please check once",
+					}
+					json.NewEncoder(w).Encode(errorAPi)
 				}
-				json.NewEncoder(w).Encode(errorAPi)
-			}
 		}
 	}
 }
@@ -202,44 +200,20 @@ func Auth_redirection(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func Customer_render(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-	jwtToken := r.Header.Get("Authorization")
-	state, _, role := middlewares.Verify_token(jwtToken)
-	fmt.Println(role)
-	if !state {
-		fmt.Fprintf(w, "Your jwt token has expired please login again")
-	} else if role != "customer" {
-		fmt.Fprintf(w, "This is a protected route and you are not allowed")
-	}else{
-		fmt.Fprintf(w, "Welcome customer")
-	}
-}
-func Chef_render(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-	jwtToken := r.Header.Get("Authorization")
-	state, _, role := middlewares.Verify_token(jwtToken)
-	if !state {
-		fmt.Fprintf(w, "Your jwt token has expired please login again")
-	} else if role != "customer" {
-		fmt.Fprintf(w, "This is a protected route and you are not allowed")
-	}else{
-		fmt.Fprintf(w, "Welcome chef")
-	}
-}
+
+
 func Admin_render(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	jwtToken := r.Header.Get("Authorization")
 	state, _, role := middlewares.Verify_token(jwtToken)
 	if !state {
 		fmt.Fprintf(w, "Your jwt token has expired please login again")
-	} else if role != "customer" {
+	} else if role != "admin" {
 		fmt.Fprintf(w, "This is a protected route and you are not allowed")
 	}else{
 		fmt.Fprintf(w, "Welcome admin")
 	}
 }
 
-func Logout_handler(){
-	
-}
+
+

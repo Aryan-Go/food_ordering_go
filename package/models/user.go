@@ -46,18 +46,50 @@ func Get_all_users()([]User) {
 	return users_data
 }
 
-func Get_users_id (id int)(User){
+func Get_users_id(id int)(User){
 	query := "SELECT * FROM user WHERE user_id = (?)"
 	result,err := DB.Query(query , id)
 	var user User
 	if(err != nil){
 		log.Fatal("There is some error in finding this id or it doesn't exists")
-	} else{
-		for result.Next() {
-			if err := result.Scan(&user.Id, &user.Email, &user.Name, &user.Password, &user.Role); err != nil {
-			log.Fatal(err)
+		} else{
+			for result.Next() {
+				if err := result.Scan(&user.Id, &user.Email, &user.Name, &user.Password, &user.Role); err != nil {
+					log.Fatal(err)
+				}
 			}
 		}
+		return user
 	}
-	return user
+	
+func Find_email(email string) bool {
+	query := "SELECT * FROM user WHERE email = (?)"
+	result,err := DB.Query(query , email)
+	if(err != nil){
+		log.Fatal("There is some error in email in login : " , err)
+		return false
+		} else{
+			if !result.Next() {
+				return false
+				} else{
+					return true
+				}
+			}
+		}
+		
+func Find_password(email string) (string,string) {
+	query := "SELECT * FROM user WHERE email = (?)"
+	result,err := DB.Query(query , email)
+	var user User
+	if(err != nil){
+		log.Fatal("There is some error in email in login : " , err)
+		return "",""
+		} else{
+			for result.Next() {
+				if err := result.Scan(&user.Id, &user.Email, &user.Name, &user.Password, &user.Role); err != nil {
+					log.Fatal(err)
+				}
+			}
+		}
+	return user.Password,user.Role
 }
