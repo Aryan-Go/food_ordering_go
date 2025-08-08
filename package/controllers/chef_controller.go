@@ -24,3 +24,16 @@ func Chef_render(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "Welcome chef")
 	}
 }
+
+func Render_order(w http.ResponseWriter, r *http.Request){
+	w.Header().Set("Content-Type", "application/json")
+	jwtToken := r.Header.Get("Authorization")
+	state, _, role := middlewares.Verify_token(jwtToken)
+	if !state {
+		fmt.Fprintf(w, "Your jwt token has expired please login again")
+	} else if role != "chef" {
+		fmt.Fprintf(w, "This is a protected route and you are not allowed")
+	}else{
+		fmt.Fprintf(w, "Welcome chef")
+	}
+}
