@@ -131,3 +131,33 @@ func Add_ordered_items(food_id int , quant int, instructions string , order_id i
 		fmt.Println("The data has been successfully added")
 	}
 }
+
+type Food_added struct{
+	Id int `json:"food_id"`
+	Quant int `json:"quant"`
+	Instruct string `json:"instructions"`
+	Food_status string `json:"status"`
+	Order_status int `json:"order_id"`
+}
+
+var food_slice []Food_added
+
+func Get_orders(order_id int)([]Food_added){
+	const food_status = "left";
+	query := `SELECT * FROM ordered_items WHERE order_id = ? AND food_status = ?`
+    result,err := DB.Query(query, order_id, food_status);
+	if(err != nil){
+		log.Fatal("There is some error in getting data from the ordered_items : " , err)
+		} else{
+			for result.Next(){
+				var food_item Food_added
+				err := result.Scan(&food_item.Id , &food_item.Quant , &food_item.Instruct ,&food_item.Order_status, &food_item.Food_status)
+				if(err != nil){
+					fmt.Println(err.Error())
+					continue
+				}
+				food_slice = append(food_slice, food_item)
+			}
+		}
+		return food_slice;
+	}

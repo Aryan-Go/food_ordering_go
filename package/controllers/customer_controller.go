@@ -95,11 +95,37 @@ func Foof_items_added(w http.ResponseWriter, r *http.Request) {
 							for key,value := range data_add.Items_added{
 								if(value != 0){
 									models.Add_ordered_items(data_add.Id_arr[key] , data_add.Items_added[key] , data_add.Special_instructions[key] , id)
-									fmt.Fprintf(w , "All the data has been added in the order table and ordered_items table successfully")
+									fmt.Fprintf(w , "All the data has been added in the order table and ordered_items table successfully with order id %v" , id)
 								}
 							}
 						}
 				}
+			}
+		}
+	}
+}
+type Order_id struct{
+	Id int `json:"id"`
+}
+func Get_ordered_items(w http.ResponseWriter, r *http.Request){
+	jwtToken := r.Header.Get("Authorization")
+	state, _, role := middlewares.Verify_token(jwtToken)
+	var order_id Order_id
+	if !state {
+		fmt.Fprintf(w, "Your jwt token has expired please login again")
+	} else if role != "customer" {
+		fmt.Fprintf(w, "This is a protected route and you are not allowed")
+	} else {
+		err := json.NewDecoder(r.Body).Decode(&order_id)
+		if(err != nil){
+			fmt.Fprintf(w , "There is some error in getting the order id")
+		} else{
+			fmt.Println(order_id.Id)
+			food_slices := models.Get_orders(order_id.Id)
+			if(len(food_slices) == 0){
+				fmt.Fprintf(w, "The order is completed or not yet made")
+			} else{
+				json.NewEncoder(w).Encode(food_slices)
 			}
 		}
 	}

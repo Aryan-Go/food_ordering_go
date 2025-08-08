@@ -21,5 +21,6 @@ func All_routes() *mux.Router {
 	r.HandleFunc("/cus_chef" , controllers.Customer_chef).Methods("GET")
 	r.HandleFunc("/menu_show" , controllers.Menu_render).Methods("GET")
 	r.HandleFunc("/food_items_added" , controllers.Foof_items_added).Methods("POST")
+	r.HandleFunc("/render_waiting" , controllers.Get_ordered_items).Methods("GET")
 	return r
 }
