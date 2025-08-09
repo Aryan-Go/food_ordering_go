@@ -23,5 +23,6 @@ func All_routes() *mux.Router {
 	r.HandleFunc("/food_items_added" , controllers.Foof_items_added).Methods("POST")
 	r.HandleFunc("/render_waiting" , controllers.Get_ordered_items).Methods("GET")
 	r.HandleFunc("/render_order" , controllers.Get_ordered_items).Methods("GET")
+	r.HandleFunc("/complete_order" , controllers.Complete_order).Methods("POST")
 	return r
 }
