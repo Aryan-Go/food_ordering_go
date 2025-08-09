@@ -47,6 +47,22 @@ func SignupHandler(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(errorAPi)
 		return
 	}
+	if(newUser.Role == "admin" || newUser.Role == "chef"){
+		var errorAPi = structures.Error{
+			Code:    http.StatusBadRequest,
+			Message: "Your role cannot be a admin or a chef. You need to be a customer only",
+		}
+		json.NewEncoder(w).Encode(errorAPi)
+		return
+	}
+	if(newUser.Role != "customer" || newUser.Role != "admin" || newUser.Role != "chef"){
+		var errorAPi = structures.Error{
+			Code:    http.StatusBadRequest,
+			Message: "Please put a valid role",
+		}
+		json.NewEncoder(w).Encode(errorAPi)
+		return
+	}
 	check := models.FindEmail(newUser.Email)
 	if !check {
 		var errorAPi = structures.Error{
@@ -228,13 +244,19 @@ func AuthRedirection(w http.ResponseWriter, r *http.Request) {
 func AdminHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	jwtToken := r.Header.Get("Authorization")
-	state, _, role := middlewares.VerifyToken(jwtToken)
+	state, email, role := middlewares.VerifyToken(jwtToken)
 	if !state {
 		var err structures.Error
 		err.Code = http.StatusBadRequest
 		err.Message = "Your jwt token has expired please login again"
 		json.NewEncoder(w).Encode(err)
 	} else if role != "admin" {
+		if email != "admin@gmail.com" {
+			var err structures.Error
+			err.Code = http.StatusBadRequest
+			err.Message = "This is a protected route and you cannot just put a role admin and enter this route"
+			json.NewEncoder(w).Encode(err)
+		}
 		var err structures.Error
 		err.Code = http.StatusBadRequest
 		err.Message = "This is a protected route and you are not allowed"
