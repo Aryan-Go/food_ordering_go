@@ -41,3 +41,23 @@ func Render_payment(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 }
+
+type Incomplete struct{
+	Order_id_order []int
+	Order_id_payment []int
+}
+
+func Render_admin(w http.ResponseWriter, r *http.Request){
+jwtToken := r.Header.Get("Authorization")
+	state, _, role := middlewares.Verify_token(jwtToken)
+	if !state {
+		fmt.Fprintf(w, "Your jwt token has expired please login again")
+	} else if role != "admin" {
+		fmt.Fprintf(w, "This is a protected route and you are not allowed")
+	} else {
+		var details Incomplete
+		details.Order_id_order = models.Incomplete_order_id()
+		details.Order_id_payment = models.Unpaid_order_id()
+		json.NewEncoder(w).Encode(details)
+	}
+}
