@@ -3,6 +3,7 @@ package models
 import (
 	"database/sql"
 	"fmt"
+	"github/aryan-go/food_ordering_go/package/structures"
 	"log"
 )
 
@@ -38,7 +39,7 @@ func Complete_order(order_id int) bool {
 	} else {
 		counter1 := 0
 		counter2 := 0
-		var food_item Food_added
+		var food_item structures.Food_added
 		for result.Next() {
 			fmt.Println("I am in")
 			counter1++

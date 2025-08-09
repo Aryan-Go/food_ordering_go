@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github/aryan-go/food_ordering_go/package/middlewares"
 	"github/aryan-go/food_ordering_go/package/models"
+	"github/aryan-go/food_ordering_go/package/structures"
 	"log"
 	"net/http"
 	"strconv"
@@ -15,25 +16,13 @@ import (
 
 // ! here we will be writing the logic for routing fo the user
 
-type User struct {
-	Name       string `json:"name"`
-	Email      string `json:"email"`
-	Password   string `json:"password"`
-	Repassword string `json:"repassword"`
-	Role       string `json:"role"`
-}
 
-type Login struct {
-	Email    string `json:"email"`
-	Password string `json:"password"`
-}
 
-var users []User
 
-type Error struct {
-	Code    int    `json:"status_code"`
-	Message string `json:"message"`
-}
+
+var users []structures.User
+
+
 
 func Home_handler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("You are the the main link")
@@ -41,18 +30,18 @@ func Home_handler(w http.ResponseWriter, r *http.Request) {
 }
 
 func Render_signup(w http.ResponseWriter, r *http.Request) {
-	var newUser User
+	var newUser structures.User
 	w.Header().Set("Content-Type", "application/json")
 	err := json.NewDecoder(r.Body).Decode(&newUser)
 	if err != nil {
-		var errorAPi = Error{
+		var errorAPi = structures.Error{
 			Code:    http.StatusBadRequest,
 			Message: err.Error(),
 		}
 		json.NewEncoder(w).Encode(errorAPi)
 	} else {
 		if len(newUser.Name) == 0 || len(newUser.Email) == 0 || len(newUser.Password) == 0 || len(newUser.Repassword) == 0 || len(newUser.Role) == 0 {
-			var errorAPi = Error{
+			var errorAPi = structures.Error{
 				Code:    http.StatusBadRequest,
 				Message: "Your input is invalid or empty",
 			}
@@ -60,7 +49,7 @@ func Render_signup(w http.ResponseWriter, r *http.Request) {
 		} else {
 			check := models.Find_email(newUser.Email)
 			if !check {
-				var errorAPi = Error{
+				var errorAPi = structures.Error{
 					Code:    http.StatusBadRequest,
 					Message: "Email id already present please try to login",
 				}
@@ -82,21 +71,21 @@ func Render_signup(w http.ResponseWriter, r *http.Request) {
 							models.Add_users(newUser.Email, newUser.Name, newUser.Password, newUser.Role)
 							fmt.Fprint(w, "Data has been added successfully")
 						} else {
-							var errorAPi = Error{
+							var errorAPi = structures.Error{
 								Code:    http.StatusBadRequest,
 								Message: "Your password and repassword is not matching please try again",
 							}
 							json.NewEncoder(w).Encode(errorAPi)
 						}
 					} else {
-						var errorAPi = Error{
+						var errorAPi = structures.Error{
 							Code:    http.StatusBadRequest,
 							Message: "Your password is not strong enough it must have special characters, numbers, upper case",
 						}
 						json.NewEncoder(w).Encode(errorAPi)
 					}
 				} else {
-					var errorAPi = Error{
+					var errorAPi = structures.Error{
 						Code:    http.StatusBadRequest,
 						Message: "Your email id is not valid",
 					}
@@ -115,14 +104,14 @@ func Getdata_signup(w http.ResponseWriter, r *http.Request) {
 	if len(users) != 0 {
 		err := json.NewEncoder(w).Encode(&users)
 		if err != nil {
-			var errorAPi = Error{
+			var errorAPi = structures.Error{
 				Code:    http.StatusBadRequest,
 				Message: err.Error(),
 			}
 			json.NewEncoder(w).Encode(errorAPi)
 		}
 	} else {
-		var err Error
+		var err structures.Error
 		err.Code = http.StatusBadRequest
 		err.Message = "There is no data of users right now"
 		json.NewEncoder(w).Encode(err)
@@ -131,12 +120,12 @@ func Getdata_signup(w http.ResponseWriter, r *http.Request) {
 }
 
 func Render_login(w http.ResponseWriter, r *http.Request) {
-	var loginUser Login
+	var loginUser structures.Login
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	err := json.NewDecoder(r.Body).Decode(&loginUser)
 	if err != nil {
-		var errorAPi = Error{
+		var errorAPi = structures.Error{
 			Code:    http.StatusBadRequest,
 			Message: "There is some error with the email or password sent please send valid input for login",
 		}
@@ -150,18 +139,18 @@ func Render_login(w http.ResponseWriter, r *http.Request) {
 			if err == nil {
 				jwtToken, err := middlewares.Create_token(loginUser.Email, role)
 				if err != nil {
-					var err Error
+					var err structures.Error
 					err.Code = http.StatusBadRequest
 					err.Message = "There is some error in generating jwt token"
 					json.NewEncoder(w).Encode(err)
 				} else {
-					var succ Error
+					var succ structures.Error
 					succ.Code = http.StatusAccepted
 					succ.Message = jwtToken
 					json.NewEncoder(w).Encode(succ)
 				}
 			} else {
-				var errorAPi = Error{
+				var errorAPi = structures.Error{
 					Code:    http.StatusForbidden,
 					Message: "Your password is wrong for logging in please check once",
 				}
@@ -169,7 +158,7 @@ func Render_login(w http.ResponseWriter, r *http.Request) {
 			}
 		} else {
 			if counter == len(users) {
-				var errorAPi = Error{
+				var errorAPi = structures.Error{
 					Code:    http.StatusForbidden,
 					Message: "Your email is wrong for logging in please check once",
 				}
@@ -185,7 +174,7 @@ func Getiddata_signup(w http.ResponseWriter, r *http.Request) {
 	num, errr := strconv.Atoi(id)
 	fmt.Println(num)
 	if errr != nil {
-		var err Error
+		var err structures.Error
 		err.Code = http.StatusBadRequest
 		err.Message = errr.Error()
 		json.NewEncoder(w).Encode(err)
@@ -206,13 +195,13 @@ func Auth_redirection(w http.ResponseWriter, r *http.Request) {
 		} else if role == "admin" {
 			http.Redirect(w, r, "/admin", http.StatusSeeOther)
 		} else {
-			var err Error
+			var err structures.Error
 			err.Code = http.StatusBadRequest
 			err.Message = "This is a protected route and you are not allowed"
 			json.NewEncoder(w).Encode(err)
 		}
 	} else {
-		var err Error
+		var err structures.Error
 		err.Code = http.StatusBadRequest
 		err.Message = "Your jwt token has expired please login again"
 		json.NewEncoder(w).Encode(err)
@@ -224,17 +213,17 @@ func Admin_render(w http.ResponseWriter, r *http.Request) {
 	jwtToken := r.Header.Get("Authorization")
 	state, _, role := middlewares.Verify_token(jwtToken)
 	if !state {
-		var err Error
+		var err structures.Error
 		err.Code = http.StatusBadRequest
 		err.Message = "Your jwt token has expired please login again"
 		json.NewEncoder(w).Encode(err)
 	} else if role != "admin" {
-		var err Error
+		var err structures.Error
 		err.Code = http.StatusBadRequest
 		err.Message = "This is a protected route and you are not allowed"
 		json.NewEncoder(w).Encode(err)
 	} else {
-		var succ Error
+		var succ structures.Error
 		succ.Code = http.StatusBadRequest
 		succ.Message = "Welcome admin"
 		json.NewEncoder(w).Encode(succ)

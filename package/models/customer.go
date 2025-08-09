@@ -2,16 +2,11 @@ package models
 
 import (
 	"fmt"
+	"github/aryan-go/food_ordering_go/package/structures"
 	"log"
 )
 
-type Food struct {
-	Food_id     int     `json:"id"`
-	Name        string  `json:"name"`
-	Desc        string  `json:"description"`
-	Price       float64 `json:"price"`
-	Category_id int     `json:"c_id"`
-}
+
 
 func Customer_to_chef(email string) {
 	query := "UPDATE user SET role = (?) WHERE email = (?)"
@@ -23,16 +18,16 @@ func Customer_to_chef(email string) {
 
 }
 
-var menu_data []Food
+var menu_data []structures.Food
 
-func Get_menu() []Food {
+func Get_menu() []structures.Food {
 	query := "SELECT * FROM food_menu"
 	result, err := DB.Query(query)
 	if err != nil {
 		log.Fatal("There is some error in bringing the menu from the database : ", err)
 	} else {
 		for result.Next() {
-			var food Food
+			var food structures.Food
 			if err := result.Scan(&food.Food_id, &food.Name, &food.Desc, &food.Price, &food.Category_id); err != nil {
 				log.Fatal(err)
 			}
@@ -49,7 +44,7 @@ func Find_free_chef() int {
   	comp_lef  := "left"
 	query := "SELECT * FROM user WHERE role = ? AND NOT EXISTS (SELECT *  FROM  order_table WHERE order_table.food_status = ? AND order_table.chef_id = user.user_id);"
 	result,err := DB.Query(query , role , comp_lef)
-	var user User
+	var user structures.User2
 	if(err != nil){
 		log.Fatal("There is some error in finding a free chef : " , err)
 		defer result.Close()
@@ -91,7 +86,7 @@ func Find_customer_id(email string) int {
 	role := "customer"
 	query := "SELECT * FROM user WHERE role = ? AND email = ?"
 	result,err := DB.Query(query , role , email)
-	var user User
+	var user structures.User2
 	if(err != nil){
 		log.Fatal("There is some error in finding a customer : " , err)
 		defer result.Close()
@@ -143,18 +138,11 @@ func Add_ordered_items(food_id int , quant int, instructions string , order_id i
 	}
 }
 
-type Food_added struct{
-	Id int `json:"food_id"`
-	Quant int `json:"quant"`
-	Instruct string `json:"instructions"`
-	Food_status string `json:"status"`
-	Order_status int `json:"order_id"`
-	Food_name string `json:"food_name"`
-}
 
-var food_slice []Food_added
 
-func Get_orders(order_id int)([]Food_added){
+var food_slice []structures.Food_added
+
+func Get_orders(order_id int)([]structures.Food_added){
 	food_status := "left";
 	query := `SELECT * FROM ordered_items WHERE order_id = ? AND food_status = ?`
     result,err := DB.Query(query, order_id, food_status);
@@ -163,7 +151,7 @@ func Get_orders(order_id int)([]Food_added){
 		defer result.Close()
 		} else{
 			for result.Next(){
-				var food_item Food_added
+				var food_item structures.Food_added
 				err := result.Scan(&food_item.Id , &food_item.Quant , &food_item.Instruct ,&food_item.Order_status, &food_item.Food_status)
 				food_item.Food_name = Get_food_name(food_item.Id)
 				if(err != nil){
@@ -180,7 +168,7 @@ func Get_orders(order_id int)([]Food_added){
 func Get_food_name(food_id int)string{
 	query := `SELECT * FROM food_menu WHERE food_id = ?`
 	result,err := DB.Query(query , food_id)
-	var food_item Food
+	var food_item structures.Food
 	if(err != nil){
 		defer result.Close()
 		log.Fatal("There is some error getting the food name" , err)

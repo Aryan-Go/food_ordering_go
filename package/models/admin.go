@@ -2,9 +2,8 @@ package models
 
 import (
 	"fmt"
+	"github/aryan-go/food_ordering_go/package/structures"
 	"log"
-
-	"gopkg.in/guregu/null.v3"
 )
 
 func Add_payment_details(price float64, order_id int, customer_id int) {
@@ -27,7 +26,7 @@ func Find_payment(quant []int, food_id []int) float64 {
 			log.Fatal("There is some error in finding the data for this is")
 		} else {
 			for result.Next() {
-				var food_item Food
+				var food_item structures.Food
 				err := result.Scan(&food_item.Food_id, &food_item.Name, &food_item.Desc, &food_item.Price, &food_item.Category_id)
 				if err != nil {
 					log.Fatal("There is some error in scanning for details", err)
@@ -41,20 +40,13 @@ func Find_payment(quant []int, food_id []int) float64 {
 	return total_price
 }
 
-type Payment_table struct {
-	Total_price    float64    `json:"total_price"`
-	Tip            null.Float `json:"tip"`
-	Payment_status string     `json:"payment_status"`
-	Order_id       int        `json:"order_id"`
-	Customer_id    int        `json:"customer_id"`
-	Payment_id     int        `json:"payment_id"`
-}
+
 
 func Find_total_payment(order_id int, customer_id int) float64 {
 	pay_stat := "left"
 	query := "SELECT * FROM payment_table WHERE order_id = ? AND customer_id = ? AND payment_status = ?"
 	result, err := DB.Query(query, order_id, customer_id, pay_stat)
-	var details Payment_table
+	var details structures.Payment_table
 	if err != nil {
 		log.Fatal("There is some error in getting the payment data")
 	} else {
@@ -69,18 +61,13 @@ func Find_total_payment(order_id int, customer_id int) float64 {
 	return details.Total_price
 }
 
-type Order struct {
-	Order_id    int    `json:"order_id"`
-	Customer_id int    `json:"customer_id"`
-	Food_status string `json:"food_status"`
-	Chef_id     int    `json:"chef_id"`
-}
+
 
 func Incomplete_order_id() []int {
 	status := "left"
 	query := "SELECT * FROM order_table WHERE food_status=?"
 	var ids []int
-	var orderdetails Order
+	var orderdetails structures.Order
 	result, err := DB.Query(query, status)
 	if err != nil {
 		log.Fatal("There is some error in getting the required details")
@@ -102,7 +89,7 @@ func Unpaid_order_id() []int {
 	status := "left"
 	query := "SELECT * FROM payment_table WHERE payment_status=?"
 	var ids []int
-	var details Payment_table
+	var details structures.Payment_table
 	result, err := DB.Query(query, status)
 	if err != nil {
 		log.Fatal("There is some error in getting the required details")
