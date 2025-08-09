@@ -16,7 +16,7 @@ import (
 	// "golang.org/x/crypto/bcrypt"
 )
 
-func CustomerRender(w http.ResponseWriter, r *http.Request) {
+func CustomerHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	jwt_token := r.Header.Get("Authorization")
 	state, _, role := middlewares.VerifyToken(jwt_token)
@@ -39,7 +39,7 @@ func CustomerRender(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func CustomerChef(w http.ResponseWriter, r *http.Request) {
+func CustomerChefConverter(w http.ResponseWriter, r *http.Request) {
 	jwtToken := r.Header.Get("Authorization")
 	state, email, role := middlewares.VerifyToken(jwtToken)
 	if !state {
@@ -60,7 +60,7 @@ func CustomerChef(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(succ)
 	}
 }
-func MenuRender(w http.ResponseWriter, r *http.Request) {
+func MenuHandler(w http.ResponseWriter, r *http.Request) {
 	jwt_token := r.Header.Get("Authorization")
 	state, _, role := middlewares.VerifyToken(jwt_token)
 	if !state {
@@ -83,7 +83,7 @@ func MenuRender(w http.ResponseWriter, r *http.Request) {
 
 var data_add structures.Items_added
 
-func FoofItemsAdded(w http.ResponseWriter, r *http.Request) {
+func FoodItemsAdded(w http.ResponseWriter, r *http.Request) {
 	jwt_token := r.Header.Get("Authorization")
 	state, email, role := middlewares.VerifyToken(jwt_token)
 	if !state {

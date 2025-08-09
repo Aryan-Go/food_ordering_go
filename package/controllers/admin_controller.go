@@ -13,7 +13,7 @@ import (
 
 
 
-func RenderPayment(w http.ResponseWriter, r *http.Request) {
+func PaymentHandler(w http.ResponseWriter, r *http.Request) {
 	jwt_token := r.Header.Get("Authorization")
 	state, email, role := middlewares.VerifyToken(jwt_token)
 	if !state {
@@ -49,7 +49,7 @@ func RenderPayment(w http.ResponseWriter, r *http.Request) {
 
 
 
-func RenderAdmin(w http.ResponseWriter, r *http.Request) {
+func AdminDetails(w http.ResponseWriter, r *http.Request) {
 	jwt_token := r.Header.Get("Authorization")
 	state, _, role := middlewares.VerifyToken(jwt_token)
 	if !state {

@@ -14,7 +14,7 @@ import (
 	// "golang.org/x/crypto/bcrypt"
 )
 
-func ChefRender(w http.ResponseWriter, r *http.Request) {
+func ChefHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	jwt_token := r.Header.Get("Authorization")
 	state, _, role := middlewares.VerifyToken(jwt_token)

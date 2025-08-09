@@ -27,7 +27,7 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(succAPi)
 }
 
-func RenderSignup(w http.ResponseWriter, r *http.Request) {
+func SignupHandler(w http.ResponseWriter, r *http.Request) {
 	var newUser structures.User
 	w.Header().Set("Content-Type", "application/json")
 	err := json.NewDecoder(r.Body).Decode(&newUser)
@@ -100,7 +100,7 @@ func RenderSignup(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func GetdataSignup(w http.ResponseWriter, r *http.Request) {
+func GetUsersData(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	jwtToken := r.Header.Get("Authorization")
 	state, _, role := middlewares.VerifyToken(jwtToken)
@@ -136,7 +136,7 @@ func GetdataSignup(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func RenderLogin(w http.ResponseWriter, r *http.Request) {
+func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	var loginUser structures.Login
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
@@ -225,7 +225,7 @@ func AuthRedirection(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func AdminRender(w http.ResponseWriter, r *http.Request) {
+func AdminHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	jwtToken := r.Header.Get("Authorization")
 	state, _, role := middlewares.VerifyToken(jwtToken)
