@@ -11,7 +11,7 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-func Email_verification(email string) bool {
+func EmailVerification(email string) bool {
 	emailRegex := `(?i)^(?:[a-z0-9!#$%&'*+/=?^_` + "`" + `{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_` + "`" + `{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)*$`
 	re := regexp.MustCompile(emailRegex)
 	if re.MatchString(email) {
@@ -21,7 +21,7 @@ func Email_verification(email string) bool {
 	}
 }
 
-func Password_verification(password string) bool {
+func PasswordVerification(password string) bool {
 	score := 0
 	for _, char := range password {
 		if unicode.IsUpper(char) {
@@ -41,7 +41,7 @@ func Password_verification(password string) bool {
 	}
 }
 
-func Get_dotenv_data() string {
+func GetDotenvData() string {
 	config, err := backend.LoadConfig("../")
 	if err != nil {
         log.Fatal("cannot load config:", err)
@@ -51,7 +51,7 @@ func Get_dotenv_data() string {
 		return greeting
 }
 
-func Create_token(email string, role string) (string, error) {
+func CreateToken(email string, role string) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256,
 		jwt.MapClaims{
 			"email": email,
@@ -59,7 +59,7 @@ func Create_token(email string, role string) (string, error) {
 			"exp":   time.Now().Add(time.Hour * 24).Unix(),
 		})
 
-	tokenString, err := token.SignedString([]byte(Get_dotenv_data())) // ! the key must be in the form of bytes
+	tokenString, err := token.SignedString([]byte(GetDotenvData())) // ! the key must be in the form of bytes
 	if err != nil {
 		log.Fatalf("Error in creating jwt: %s", err)
 		return "", err
@@ -67,9 +67,9 @@ func Create_token(email string, role string) (string, error) {
 	return tokenString, nil
 }
 
-func Verify_token(tokenString string) (bool, string, string) {
+func VerifyToken(tokenString string) (bool, string, string) {
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		return []byte(Get_dotenv_data()), nil
+		return []byte(GetDotenvData()), nil
 	})
 
 	if err != nil {

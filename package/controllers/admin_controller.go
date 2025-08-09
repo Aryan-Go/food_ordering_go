@@ -13,9 +13,9 @@ import (
 
 
 
-func Render_payment(w http.ResponseWriter, r *http.Request) {
-	jwtToken := r.Header.Get("Authorization")
-	state, email, role := middlewares.Verify_token(jwtToken)
+func RenderPayment(w http.ResponseWriter, r *http.Request) {
+	jwt_token := r.Header.Get("Authorization")
+	state, email, role := middlewares.VerifyToken(jwt_token)
 	if !state {
 		var err structures.Error
 		err.Code = http.StatusBadRequest
@@ -36,12 +36,12 @@ func Render_payment(w http.ResponseWriter, r *http.Request) {
 			json.NewEncoder(w).Encode(err)
 			fmt.Println(err)
 		} else {
-			total_payment := models.Find_total_payment(detials.Order_id, models.Find_customer_id(email))
+			total_payment := models.FindTotalPayment(detials.Order_id, models.FindCustomerId(email))
 			final_payment := total_payment + ((total_payment * float64(detials.Tip)) / float64(100))
 			var pay_details structures.Payment_details
 			pay_details.Final_payment = final_payment
 			pay_details.Tip = detials.Tip
-			models.Update_payment_table(detials.Order_id, models.Find_customer_id(email))
+			models.UpdatePaymentTable(detials.Order_id, models.FindCustomerId(email))
 			json.NewEncoder(w).Encode(pay_details)
 		}
 	}
@@ -49,9 +49,9 @@ func Render_payment(w http.ResponseWriter, r *http.Request) {
 
 
 
-func Render_admin(w http.ResponseWriter, r *http.Request) {
-	jwtToken := r.Header.Get("Authorization")
-	state, _, role := middlewares.Verify_token(jwtToken)
+func RenderAdmin(w http.ResponseWriter, r *http.Request) {
+	jwt_token := r.Header.Get("Authorization")
+	state, _, role := middlewares.VerifyToken(jwt_token)
 	if !state {
 		var err structures.Error
 		err.Code = http.StatusBadRequest
@@ -64,8 +64,8 @@ func Render_admin(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(err)
 	} else {
 		var details structures.Incomplete
-		details.Order_id_order = models.Incomplete_order_id()
-		details.Order_id_payment = models.Unpaid_order_id()
+		details.Order_id_order = models.IncompleteOrderId()
+		details.Order_id_payment = models.UnpaidOrderId()
 		json.NewEncoder(w).Encode(details)
 	}
 }

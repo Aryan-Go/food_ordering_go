@@ -14,10 +14,10 @@ import (
 	// "golang.org/x/crypto/bcrypt"
 )
 
-func Chef_render(w http.ResponseWriter, r *http.Request) {
+func ChefRender(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	jwtToken := r.Header.Get("Authorization")
-	state, _, role := middlewares.Verify_token(jwtToken)
+	jwt_token := r.Header.Get("Authorization")
+	state, _, role := middlewares.VerifyToken(jwt_token)
 	if !state {
 		var err structures.Error
 		err.Code = http.StatusBadRequest
@@ -38,10 +38,10 @@ func Chef_render(w http.ResponseWriter, r *http.Request) {
 
 
 
-func Complete_order(w http.ResponseWriter, r *http.Request) {
+func CompleteOrder(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	jwtToken := r.Header.Get("Authorization")
-	state, _, role := middlewares.Verify_token(jwtToken)
+	jw_token := r.Header.Get("Authorization")
+	state, _, role := middlewares.VerifyToken(jw_token)
 	if !state {
 		var err structures.Error
 		err.Code = http.StatusBadRequest
@@ -72,9 +72,9 @@ func Complete_order(w http.ResponseWriter, r *http.Request) {
 			json.NewEncoder(w).Encode(err)
 		} else {
 			fmt.Println(order_id.Order_id)
-			check_item := models.Complete_order_item(order_id.Order_id, "completed", order_id.Food_id)
+			check_item := models.CompleteOrderItem(order_id.Order_id, "completed", order_id.Food_id)
 			// check_item := models.Complete_order_item(6 , "left" , 1)
-			check_order := models.Complete_order(order_id.Order_id)
+			check_order := models.CompleteOrder(order_id.Order_id)
 			if check_item && !check_order {
 				var succ structures.Error
 				succ.Code = http.StatusAccepted

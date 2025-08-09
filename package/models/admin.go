@@ -6,7 +6,7 @@ import (
 	"log"
 )
 
-func Add_payment_details(price float64, order_id int, customer_id int) {
+func AddPaymentDetails(price float64, order_id int, customer_id int) {
 	payment_status := "left"
 	query := "INSERT INTO payment_table (total_price,payment_status,order_id,customer_id) VALUES (?,?,?,?)"
 	_, err := DB.Query(query, price, payment_status, order_id, customer_id)
@@ -17,7 +17,7 @@ func Add_payment_details(price float64, order_id int, customer_id int) {
 	}
 }
 
-func Find_payment(quant []int, food_id []int) float64 {
+func FindPayment(quant []int, food_id []int) float64 {
 	var total_price float64 = 0
 	for i := 0; i < len(quant); i++ {
 		query := "SELECT * FROM food_menu WHERE food_id = ?"
@@ -42,7 +42,7 @@ func Find_payment(quant []int, food_id []int) float64 {
 
 
 
-func Find_total_payment(order_id int, customer_id int) float64 {
+func FindTotalPayment(order_id int, customer_id int) float64 {
 	pay_stat := "left"
 	query := "SELECT * FROM payment_table WHERE order_id = ? AND customer_id = ? AND payment_status = ?"
 	result, err := DB.Query(query, order_id, customer_id, pay_stat)
@@ -63,7 +63,7 @@ func Find_total_payment(order_id int, customer_id int) float64 {
 
 
 
-func Incomplete_order_id() []int {
+func IncompleteOrderId() []int {
 	status := "left"
 	query := "SELECT * FROM order_table WHERE food_status=?"
 	var ids []int
@@ -85,7 +85,7 @@ func Incomplete_order_id() []int {
 	return ids
 }
 
-func Unpaid_order_id() []int {
+func UnpaidOrderId() []int {
 	status := "left"
 	query := "SELECT * FROM payment_table WHERE payment_status=?"
 	var ids []int
@@ -107,7 +107,7 @@ func Unpaid_order_id() []int {
 	return ids
 }
 
-func Update_payment_table(order_id int, customer_id int) {
+func UpdatePaymentTable(order_id int, customer_id int) {
 	payment_status_2 := "completed"
 	payment_status_1 := "left"
 	query := "UPDATE payment_table SET payment_status = ? WHERE customer_id = ? AND payment_status = ? AND order_id = ?"

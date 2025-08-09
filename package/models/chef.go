@@ -7,7 +7,7 @@ import (
 	"log"
 )
 
-func Complete_order_item(order_id int, food_status string, food_id int) bool {
+func CompleteOrderItem(order_id int, food_status string, food_id int) bool {
 	fmt.Println(order_id ,food_status ,food_id)
 	query := "UPDATE ordered_items SET food_status = (?) WHERE order_id = (?) AND food_id = (?);"
 	result, err := DB.Exec(query, food_status, order_id, food_id)
@@ -30,7 +30,7 @@ func Complete_order_item(order_id int, food_status string, food_id int) bool {
 	}
 }
 
-func Complete_order(order_id int) bool {
+func CompleteOrder(order_id int) bool {
 	query2 := "SELECT * FROM ordered_items WHERE order_id = ?"
 	result, err := DB.Query(query2, order_id)
 	if err != nil {

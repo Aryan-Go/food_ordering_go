@@ -13,7 +13,7 @@ import (
 
 func main() {
 	fmt.Println("This is the main.go file")
-	_, err := models.Init_database()
+	_, err := models.InitDatabase()
 	if err != nil {
 		log.Fatalf("Failed to initialize database: %v", err)
 	}

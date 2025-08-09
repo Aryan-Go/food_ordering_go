@@ -10,7 +10,7 @@ import (
 
 var users_data []structures.User2
 
-func Add_users(email string, name string, password string, role string) (int, error) {
+func AddUsers(email string, name string, password string, role string) (int, error) {
 	query := "INSERT INTO user (email,username,password,role) VALUES (?,?,?,?)"
 	result, err := DB.Exec(query, email, name, password, role)
 	if err != nil {
@@ -25,7 +25,7 @@ func Add_users(email string, name string, password string, role string) (int, er
 	}
 }
 
-func Get_all_users()([]structures.User2) {
+func GetAllUsers()([]structures.User2) {
 	query := "SELECT * FROM user"
 	result, err := DB.Query(query)
 	if err != nil {
@@ -42,7 +42,7 @@ func Get_all_users()([]structures.User2) {
 	return users_data
 }
 
-func Get_users_id(id int)(structures.User2){
+func GetUsersId(id int)(structures.User2){
 	query := "SELECT * FROM user WHERE user_id = (?)"
 	result,err := DB.Query(query , id)
 	var user structures.User2
@@ -59,7 +59,7 @@ func Get_users_id(id int)(structures.User2){
 		return user
 	}
 	
-func Find_email(email string) bool {
+func FindEmail(email string) bool {
 	query := "SELECT * FROM user WHERE email = (?)"
 	result,err := DB.Query(query , email)
 	if(err != nil){
@@ -77,7 +77,7 @@ func Find_email(email string) bool {
 			}
 		}
 		
-func Find_password(email string) (string,string) {
+func FindPassword(email string) (string,string) {
 	query := "SELECT * FROM user WHERE email = (?)"
 	result,err := DB.Query(query , email)
 	var user structures.User2

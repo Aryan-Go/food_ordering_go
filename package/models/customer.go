@@ -8,7 +8,7 @@ import (
 
 
 
-func Customer_to_chef(email string) {
+func CustomerToChef(email string) {
 	query := "UPDATE user SET role = (?) WHERE email = (?)"
 	_, err := DB.Query(query, "chef", email)
 	if err != nil {
@@ -20,7 +20,7 @@ func Customer_to_chef(email string) {
 
 var menu_data []structures.Food
 
-func Get_menu() []structures.Food {
+func GetMenu() []structures.Food {
 	query := "SELECT * FROM food_menu"
 	result, err := DB.Query(query)
 	if err != nil {
@@ -38,7 +38,7 @@ func Get_menu() []structures.Food {
 	return menu_data
 }
 
-func Find_free_chef() int {
+func FindFreeChef() int {
 	fmt.Println("Find free chef")
 	role := "chef"
   	comp_lef  := "left"
@@ -63,7 +63,7 @@ func Find_free_chef() int {
 	return user.Id
 }
 
-func Add_order_table(cutsomer int , status string , chef int) int{
+func AddOrderTable(cutsomer int , status string , chef int) int{
 	fmt.Println("Add order table")
 	query := "INSERT INTO order_table (customer_id , food_status , chef_id) VALUES (?,?,?)"
 	result,err := DB.Exec(query , cutsomer , status , chef)
@@ -81,7 +81,7 @@ func Add_order_table(cutsomer int , status string , chef int) int{
 		}
 	}
 }
-func Find_customer_id(email string) int {
+func FindCustomerId(email string) int {
 	fmt.Println("Find customer id")
 	role := "customer"
 	query := "SELECT * FROM user WHERE role = ? AND email = ?"
@@ -106,7 +106,7 @@ func Find_customer_id(email string) int {
 	return user.Id
 }
 
-func Find_email_id(email string) bool {
+func FindEmailId(email string) bool {
 	fmt.Println("Find customer id")
 	role := "customer"
 	query := "SELECT * FROM user WHERE role = ? AND email = ?"
@@ -126,7 +126,7 @@ func Find_email_id(email string) bool {
 	}
 }
 
-func Add_ordered_items(food_id int , quant int, instructions string , order_id int){
+func AddOrderedItems(food_id int , quant int, instructions string , order_id int){
 	fmt.Println("Add ordered items")
 	food_status := "left";
     query := "INSERT INTO ordered_items VALUES (?,?,?,?,?)"
@@ -142,7 +142,7 @@ func Add_ordered_items(food_id int , quant int, instructions string , order_id i
 
 var food_slice []structures.Food_added
 
-func Get_orders(order_id int)([]structures.Food_added){
+func GetOrders(order_id int)([]structures.Food_added){
 	food_status := "left";
 	query := `SELECT * FROM ordered_items WHERE order_id = ? AND food_status = ?`
     result,err := DB.Query(query, order_id, food_status);
@@ -153,7 +153,7 @@ func Get_orders(order_id int)([]structures.Food_added){
 			for result.Next(){
 				var food_item structures.Food_added
 				err := result.Scan(&food_item.Id , &food_item.Quant , &food_item.Instruct ,&food_item.Order_status, &food_item.Food_status)
-				food_item.Food_name = Get_food_name(food_item.Id)
+				food_item.Food_name = GetFoodName(food_item.Id)
 				if(err != nil){
 					fmt.Println(err.Error())
 					continue
@@ -165,7 +165,7 @@ func Get_orders(order_id int)([]structures.Food_added){
 		return food_slice;
 }
 
-func Get_food_name(food_id int)string{
+func GetFoodName(food_id int)string{
 	query := `SELECT * FROM food_menu WHERE food_id = ?`
 	result,err := DB.Query(query , food_id)
 	var food_item structures.Food

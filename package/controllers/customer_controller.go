@@ -16,10 +16,10 @@ import (
 	// "golang.org/x/crypto/bcrypt"
 )
 
-func Customer_render(w http.ResponseWriter, r *http.Request) {
+func CustomerRender(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	jwtToken := r.Header.Get("Authorization")
-	state, _, role := middlewares.Verify_token(jwtToken)
+	jwt_token := r.Header.Get("Authorization")
+	state, _, role := middlewares.VerifyToken(jwt_token)
 	fmt.Println(role)
 	if !state {
 		var err structures.Error
@@ -39,9 +39,9 @@ func Customer_render(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func Customer_chef(w http.ResponseWriter, r *http.Request) {
+func CustomerChef(w http.ResponseWriter, r *http.Request) {
 	jwtToken := r.Header.Get("Authorization")
-	state, email, role := middlewares.Verify_token(jwtToken)
+	state, email, role := middlewares.VerifyToken(jwtToken)
 	if !state {
 		var err structures.Error
 		err.Code = http.StatusBadRequest
@@ -53,16 +53,16 @@ func Customer_chef(w http.ResponseWriter, r *http.Request) {
 		err.Message = "This is a protected route and you are not allowed"
 		json.NewEncoder(w).Encode(err)
 	} else {
-		models.Customer_to_chef(email)
+		models.CustomerToChef(email)
 		var succ structures.Error
 		succ.Code = http.StatusAccepted
 		succ.Message = "The customer has been successfully turned into chef"
 		json.NewEncoder(w).Encode(succ)
 	}
 }
-func Menu_render(w http.ResponseWriter, r *http.Request) {
-	jwtToken := r.Header.Get("Authorization")
-	state, _, role := middlewares.Verify_token(jwtToken)
+func MenuRender(w http.ResponseWriter, r *http.Request) {
+	jwt_token := r.Header.Get("Authorization")
+	state, _, role := middlewares.VerifyToken(jwt_token)
 	if !state {
 		var err structures.Error
 		err.Code = http.StatusBadRequest
@@ -74,7 +74,7 @@ func Menu_render(w http.ResponseWriter, r *http.Request) {
 		err.Message = "This is a protected route and you are not allowed"
 		json.NewEncoder(w).Encode(err)
 	} else {
-		food_data := models.Get_menu()
+		food_data := models.GetMenu()
 		json.NewEncoder(w).Encode(food_data)
 	}
 }
@@ -83,9 +83,9 @@ func Menu_render(w http.ResponseWriter, r *http.Request) {
 
 var data_add structures.Items_added
 
-func Foof_items_added(w http.ResponseWriter, r *http.Request) {
-	jwtToken := r.Header.Get("Authorization")
-	state, email, role := middlewares.Verify_token(jwtToken)
+func FoofItemsAdded(w http.ResponseWriter, r *http.Request) {
+	jwt_token := r.Header.Get("Authorization")
+	state, email, role := middlewares.VerifyToken(jwt_token)
 	if !state {
 		var err structures.Error
 		err.Code = http.StatusBadRequest
@@ -107,7 +107,7 @@ func Foof_items_added(w http.ResponseWriter, r *http.Request) {
 				err.Message = "Please put valid data only , there should be only 9 items"
 				json.NewEncoder(w).Encode(err)
 			} else {
-				id := models.Find_free_chef()
+				id := models.FindFreeChef()
 				if id == -1 {
 					var err structures.Error
 					err.Code = http.StatusBadRequest
@@ -126,13 +126,13 @@ func Foof_items_added(w http.ResponseWriter, r *http.Request) {
 						err.Message = "All items cannot be 0 please submit a valid input"
 						json.NewEncoder(w).Encode(err)
 					} else {
-						fmt.Printf("%v %v", email, models.Find_customer_id(email))
-						id := models.Add_order_table(models.Find_customer_id(email), "left", id)
-						total_payment := models.Find_payment(data_add.Items_added, data_add.Id_arr)
-						models.Add_payment_details(total_payment, id, models.Find_customer_id(email))
+						fmt.Printf("%v %v", email, models.FindCustomerId(email))
+						id := models.AddOrderTable(models.FindCustomerId(email), "left", id)
+						total_payment := models.FindPayment(data_add.Items_added, data_add.Id_arr)
+						models.AddPaymentDetails(total_payment, id, models.FindCustomerId(email))
 						for key, value := range data_add.Items_added {
 							if value != 0 {
-								models.Add_ordered_items(data_add.Id_arr[key], data_add.Items_added[key], data_add.Special_instructions[key], id)
+								models.AddOrderedItems(data_add.Id_arr[key], data_add.Items_added[key], data_add.Special_instructions[key], id)
 								var succ structures.Error
 								succ.Code = http.StatusAccepted
 								succ.Message = fmt.Sprintf("All the data has been added in the order table and ordered_items table successfully with order id %v", id)
@@ -148,9 +148,9 @@ func Foof_items_added(w http.ResponseWriter, r *http.Request) {
 
 
 
-func Get_ordered_items(w http.ResponseWriter, r *http.Request) {
-	jwtToken := r.Header.Get("Authorization")
-	state, _, role := middlewares.Verify_token(jwtToken)
+func GetOrderedItems(w http.ResponseWriter, r *http.Request) {
+	jwt_token := r.Header.Get("Authorization")
+	state, _, role := middlewares.VerifyToken(jwt_token)
 	var order_id structures.Order_id
 	if !state {
 		var err structures.Error
@@ -171,7 +171,7 @@ func Get_ordered_items(w http.ResponseWriter, r *http.Request) {
 			json.NewEncoder(w).Encode(err)
 		} else {
 			fmt.Println(order_id.Id)
-			food_slices := models.Get_orders(order_id.Id)
+			food_slices := models.GetOrders(order_id.Id)
 			if len(food_slices) == 0 {
 				var err structures.Error
 				err.Code = http.StatusBadRequest

@@ -13,7 +13,7 @@ import (
 // ! Here I will make the connection means create the database and connect it
 var DB *sql.DB
 
-func Init_database() (*sql.DB, error) {
+func InitDatabase() (*sql.DB, error) {
 	config, err := backend.LoadConfig("../")
 	if err != nil {
 		log.Fatalf("Error loading .env file: %s", err)
