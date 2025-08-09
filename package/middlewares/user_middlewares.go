@@ -2,14 +2,13 @@ package middlewares
 
 import (
 	"fmt"
+	backend "github/aryan-go/food_ordering_go"
 	"log"
-	"os"
 	"regexp"
 	"time"
 	"unicode"
 
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/joho/godotenv"
 )
 
 func Email_verification(email string) bool {
@@ -43,14 +42,13 @@ func Password_verification(password string) bool {
 }
 
 func Get_dotenv_data() string {
-	err := godotenv.Load("/Users/aryangoyal/Desktop/golang/sdsProject/backend/.env") // ! try to give absolute route
+	config, err := backend.LoadConfig("../")
 	if err != nil {
-		log.Fatalf("Error loading .env file: %s", err)
-		return err.Error()
-	} else {
-		greeting := os.Getenv("secret_key")
+        log.Fatal("cannot load config:", err)
+		return ""
+    }
+		greeting := config.Secret_key
 		return greeting
-	}
 }
 
 func Create_token(email string, role string) (string, error) {
