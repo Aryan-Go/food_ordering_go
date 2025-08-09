@@ -1,6 +1,7 @@
 package middlewares
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"regexp"
@@ -74,7 +75,8 @@ func Verify_token(tokenString string) (bool, string, string) {
 	})
 
 	if err != nil {
-		log.Fatalf("Error in verifying jwt: %s", err)
+		fmt.Printf("Error in verifying jwt: %s", err)
+		return false, "", ""
 	}
 
 	if !token.Valid {
@@ -85,4 +87,3 @@ func Verify_token(tokenString string) (bool, string, string) {
 	}
 	return false, "", ""
 }
-
