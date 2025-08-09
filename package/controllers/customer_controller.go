@@ -62,6 +62,7 @@ type Items_added struct {
 
 var data_add Items_added
 
+
 func Foof_items_added(w http.ResponseWriter, r *http.Request) {
 	jwtToken := r.Header.Get("Authorization")
 	state, email, role := middlewares.Verify_token(jwtToken)
@@ -92,6 +93,8 @@ func Foof_items_added(w http.ResponseWriter, r *http.Request) {
 						}else{
 							fmt.Printf("%v %v" , email ,models.Find_customer_id(email))
 							id := models.Add_order_table(models.Find_customer_id(email) , "left" , id)
+							total_payment := models.Find_payment(data_add.Items_added , data_add.Id_arr)
+							models.Add_payment_details(total_payment , id , models.Find_customer_id(email))
 							for key,value := range data_add.Items_added{
 								if(value != 0){
 									models.Add_ordered_items(data_add.Id_arr[key] , data_add.Items_added[key] , data_add.Special_instructions[key] , id)
