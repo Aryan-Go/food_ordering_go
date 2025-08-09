@@ -21,10 +21,10 @@ var users []structures.User
 func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("You are the the main link")
 	var succAPi = structures.Error{
-			Code:    http.StatusAccepted,
-			Message: "Home page",
-		}
-		json.NewEncoder(w).Encode(succAPi)
+		Code:    http.StatusAccepted,
+		Message: "Home page",
+	}
+	json.NewEncoder(w).Encode(succAPi)
 }
 
 func RenderSignup(w http.ResponseWriter, r *http.Request) {
@@ -93,33 +93,47 @@ func RenderSignup(w http.ResponseWriter, r *http.Request) {
 	users = append(users, newUser)
 	models.AddUsers(newUser.Email, newUser.Name, newUser.Password, newUser.Role)
 	var succAPi = structures.Error{
-			Code:    http.StatusAccepted,
-			Message: "Data added successfully",
-		}
-		json.NewEncoder(w).Encode(succAPi)
+		Code:    http.StatusAccepted,
+		Message: "Data added successfully",
+	}
+	json.NewEncoder(w).Encode(succAPi)
 
 }
 
 func GetdataSignup(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	users := models.GetAllUsers()
-	if len(users) != 0 {
-		err := json.NewEncoder(w).Encode(&users)
-		if err != nil {
-			var errorAPi = structures.Error{
-				Code:    http.StatusBadRequest,
-				Message: err.Error(),
+	jwtToken := r.Header.Get("Authorization")
+	state, _, role := middlewares.VerifyToken(jwtToken)
+	if state {
+		if role != "admin" {
+			var err structures.Error
+			err.Code = http.StatusBadRequest
+			err.Message = "This is a protected route and you are not allowed"
+			json.NewEncoder(w).Encode(err)
+		} else {
+			users := models.GetAllUsers()
+			if len(users) != 0 {
+				err := json.NewEncoder(w).Encode(&users)
+				if err != nil {
+					var errorAPi = structures.Error{
+						Code:    http.StatusBadRequest,
+						Message: err.Error(),
+					}
+					json.NewEncoder(w).Encode(errorAPi)
+				}
+			} else {
+				var err structures.Error
+				err.Code = http.StatusBadRequest
+				err.Message = "There is no data of users right now"
+				json.NewEncoder(w).Encode(err)
 			}
-			json.NewEncoder(w).Encode(errorAPi)
 		}
 	} else {
 		var err structures.Error
 		err.Code = http.StatusBadRequest
-		err.Message = "There is no data of users right now"
+		err.Message = "Your jwt token has expired please login again"
 		json.NewEncoder(w).Encode(err)
 	}
-
 }
 
 func RenderLogin(w http.ResponseWriter, r *http.Request) {
