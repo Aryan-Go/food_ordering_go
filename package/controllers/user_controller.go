@@ -16,17 +16,15 @@ import (
 
 // ! here we will be writing the logic for routing fo the user
 
-
-
-
-
 var users []structures.User
-
-
 
 func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("You are the the main link")
-	fmt.Fprintln(w, "Home page")
+	var succAPi = structures.Error{
+			Code:    http.StatusAccepted,
+			Message: "Home page",
+		}
+		json.NewEncoder(w).Encode(succAPi)
 }
 
 func RenderSignup(w http.ResponseWriter, r *http.Request) {
@@ -39,62 +37,67 @@ func RenderSignup(w http.ResponseWriter, r *http.Request) {
 			Message: err.Error(),
 		}
 		json.NewEncoder(w).Encode(errorAPi)
-	} else {
-		if len(newUser.Name) == 0 || len(newUser.Email) == 0 || len(newUser.Password) == 0 || len(newUser.Repassword) == 0 || len(newUser.Role) == 0 {
-			var errorAPi = structures.Error{
-				Code:    http.StatusBadRequest,
-				Message: "Your input is invalid or empty",
-			}
-			json.NewEncoder(w).Encode(errorAPi)
-		} else {
-			check := models.FindEmail(newUser.Email)
-			if !check {
-				var errorAPi = structures.Error{
-					Code:    http.StatusBadRequest,
-					Message: "Email id already present please try to login",
-				}
-				json.NewEncoder(w).Encode(errorAPi)
-			} else {
-				if middlewares.EmailVerification(newUser.Email) {
-					if middlewares.PasswordVerification(newUser.Password) {
-						if newUser.Password == newUser.Repassword {
-							password := []byte(newUser.Password)
-							hashedPassword, err := bcrypt.GenerateFromPassword(password, bcrypt.DefaultCost)
-							password2 := []byte(newUser.Repassword)
-							hashedPassword2, _ := bcrypt.GenerateFromPassword(password2, bcrypt.DefaultCost)
-							if err != nil {
-								log.Fatal("There is some error in encryption : ", err)
-							}
-							newUser.Password = string(hashedPassword)
-							newUser.Repassword = string(hashedPassword2)
-							users = append(users, newUser)
-							models.AddUsers(newUser.Email, newUser.Name, newUser.Password, newUser.Role)
-							fmt.Fprint(w, "Data has been added successfully")
-						} else {
-							var errorAPi = structures.Error{
-								Code:    http.StatusBadRequest,
-								Message: "Your password and repassword is not matching please try again",
-							}
-							json.NewEncoder(w).Encode(errorAPi)
-						}
-					} else {
-						var errorAPi = structures.Error{
-							Code:    http.StatusBadRequest,
-							Message: "Your password is not strong enough it must have special characters, numbers, upper case",
-						}
-						json.NewEncoder(w).Encode(errorAPi)
-					}
-				} else {
-					var errorAPi = structures.Error{
-						Code:    http.StatusBadRequest,
-						Message: "Your email id is not valid",
-					}
-					json.NewEncoder(w).Encode(errorAPi)
-				}
-			}
-
-		}
+		return
 	}
+	if len(newUser.Name) == 0 || len(newUser.Email) == 0 || len(newUser.Password) == 0 || len(newUser.Repassword) == 0 || len(newUser.Role) == 0 {
+		var errorAPi = structures.Error{
+			Code:    http.StatusBadRequest,
+			Message: "Your input is invalid or empty",
+		}
+		json.NewEncoder(w).Encode(errorAPi)
+		return
+	}
+	check := models.FindEmail(newUser.Email)
+	if !check {
+		var errorAPi = structures.Error{
+			Code:    http.StatusBadRequest,
+			Message: "Email id already present please try to login",
+		}
+		json.NewEncoder(w).Encode(errorAPi)
+		return
+	}
+	if !middlewares.EmailVerification(newUser.Email) {
+		var errorAPi = structures.Error{
+			Code:    http.StatusBadRequest,
+			Message: "Your email id is not valid",
+		}
+		json.NewEncoder(w).Encode(errorAPi)
+		return
+	}
+	if !middlewares.PasswordVerification(newUser.Password) {
+		var errorAPi = structures.Error{
+			Code:    http.StatusBadRequest,
+			Message: "Your password is not strong enough it must have special characters, numbers, upper case",
+		}
+		json.NewEncoder(w).Encode(errorAPi)
+		return
+	}
+	if !(newUser.Password == newUser.Repassword) {
+		var errorAPi = structures.Error{
+			Code:    http.StatusBadRequest,
+			Message: "Your password and repassword is not matching please try again",
+		}
+		json.NewEncoder(w).Encode(errorAPi)
+		return
+	}
+	password := []byte(newUser.Password)
+	hashedPassword, err := bcrypt.GenerateFromPassword(password, bcrypt.DefaultCost)
+	password2 := []byte(newUser.Repassword)
+	hashedPassword2, _ := bcrypt.GenerateFromPassword(password2, bcrypt.DefaultCost)
+	if err != nil {
+		log.Fatal("There is some error in encryption : ", err)
+		return
+	}
+	newUser.Password = string(hashedPassword)
+	newUser.Repassword = string(hashedPassword2)
+	users = append(users, newUser)
+	models.AddUsers(newUser.Email, newUser.Name, newUser.Password, newUser.Role)
+	var succAPi = structures.Error{
+			Code:    http.StatusAccepted,
+			Message: "Data added successfully",
+		}
+		json.NewEncoder(w).Encode(succAPi)
+
 }
 
 func GetdataSignup(w http.ResponseWriter, r *http.Request) {
