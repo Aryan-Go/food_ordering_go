@@ -79,8 +79,6 @@ func MenuHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-
-
 var data_add structures.Items_added
 
 func FoodItemsAdded(w http.ResponseWriter, r *http.Request) {
@@ -145,8 +143,6 @@ func FoodItemsAdded(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 }
-
-
 
 func GetOrderedItems(w http.ResponseWriter, r *http.Request) {
 	jwt_token := r.Header.Get("Authorization")

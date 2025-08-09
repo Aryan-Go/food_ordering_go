@@ -44,11 +44,11 @@ func PasswordVerification(password string) bool {
 func GetDotenvData() string {
 	config, err := backend.LoadConfig(".")
 	if err != nil {
-        log.Fatal("cannot load config:", err)
+		log.Fatal("cannot load config:", err)
 		return ""
-    }
-		greeting := config.Secret_key
-		return greeting
+	}
+	greeting := config.Secret_key
+	return greeting
 }
 
 func CreateToken(email string, role string) (string, error) {

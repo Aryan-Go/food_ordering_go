@@ -9,10 +9,6 @@ import (
 	"net/http"
 )
 
-
-
-
-
 func PaymentHandler(w http.ResponseWriter, r *http.Request) {
 	jwt_token := r.Header.Get("Authorization")
 	state, email, role := middlewares.VerifyToken(jwt_token)
@@ -46,8 +42,6 @@ func PaymentHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 }
-
-
 
 func AdminDetails(w http.ResponseWriter, r *http.Request) {
 	jwt_token := r.Header.Get("Authorization")

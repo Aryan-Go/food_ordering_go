@@ -8,7 +8,7 @@ import (
 )
 
 func CompleteOrderItem(order_id int, food_status string, food_id int) bool {
-	fmt.Println(order_id ,food_status ,food_id)
+	fmt.Println(order_id, food_status, food_id)
 	query := "UPDATE ordered_items SET food_status = (?) WHERE order_id = (?) AND food_id = (?);"
 	result, err := DB.Exec(query, food_status, order_id, food_id)
 	if err != nil {

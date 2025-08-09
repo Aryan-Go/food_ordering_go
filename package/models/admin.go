@@ -40,8 +40,6 @@ func FindPayment(quant []int, food_id []int) float64 {
 	return total_price
 }
 
-
-
 func FindTotalPayment(order_id int, customer_id int) float64 {
 	pay_stat := "left"
 	query := "SELECT * FROM payment_table WHERE order_id = ? AND customer_id = ? AND payment_status = ?"
@@ -60,8 +58,6 @@ func FindTotalPayment(order_id int, customer_id int) float64 {
 	defer result.Close()
 	return details.Total_price
 }
-
-
 
 func IncompleteOrderId() []int {
 	status := "left"
@@ -112,9 +108,9 @@ func UpdatePaymentTable(order_id int, customer_id int) {
 	payment_status_1 := "left"
 	query := "UPDATE payment_table SET payment_status = ? WHERE customer_id = ? AND payment_status = ? AND order_id = ?"
 	_, err := DB.Exec(query, payment_status_2, customer_id, payment_status_1, order_id)
-	if(err != nil){
-		log.Fatal("There is some error in completing the payment : " , err)
-	} else{
+	if err != nil {
+		log.Fatal("There is some error in completing the payment : ", err)
+	} else {
 		fmt.Println("The payment is completed")
 	}
 }

@@ -36,8 +36,6 @@ func ChefHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-
-
 func CompleteOrder(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	jw_token := r.Header.Get("Authorization")

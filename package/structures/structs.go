@@ -1,6 +1,7 @@
 package structures
 
 import "gopkg.in/guregu/null.v3"
+
 type Items_added struct {
 	Items_added          []int    `json:"item_add"`
 	Special_instructions []string `json:"instructions"`
@@ -76,13 +77,13 @@ type Order struct {
 	Chef_id     int    `json:"chef_id"`
 }
 
-type Food_added struct{
-	Id int `json:"food_id"`
-	Quant int `json:"quant"`
-	Instruct string `json:"instructions"`
-	Food_status string `json:"status"`
-	Order_status int `json:"order_id"`
-	Food_name string `json:"food_name"`
+type Food_added struct {
+	Id           int    `json:"food_id"`
+	Quant        int    `json:"quant"`
+	Instruct     string `json:"instructions"`
+	Food_status  string `json:"status"`
+	Order_status int    `json:"order_id"`
+	Food_name    string `json:"food_name"`
 }
 
 type Error struct {

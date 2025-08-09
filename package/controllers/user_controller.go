@@ -47,7 +47,7 @@ func SignupHandler(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(errorAPi)
 		return
 	}
-	if(newUser.Role == "admin" || newUser.Role == "chef"){
+	if newUser.Role == "admin" || newUser.Role == "chef" {
 		var errorAPi = structures.Error{
 			Code:    http.StatusBadRequest,
 			Message: "Your role cannot be a admin or a chef. You need to be a customer only",
@@ -55,7 +55,7 @@ func SignupHandler(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(errorAPi)
 		return
 	}
-	if(newUser.Role != "customer" || newUser.Role != "admin" || newUser.Role != "chef"){
+	if newUser.Role != "customer" || newUser.Role != "admin" || newUser.Role != "chef" {
 		var errorAPi = structures.Error{
 			Code:    http.StatusBadRequest,
 			Message: "Please put a valid role",

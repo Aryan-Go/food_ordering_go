@@ -7,7 +7,6 @@ import (
 
 // ? Here we will create functions to crud datatabase for the user
 
-
 var users_data []structures.User2
 
 func AddUsers(email string, name string, password string, role string) (int, error) {
@@ -25,7 +24,7 @@ func AddUsers(email string, name string, password string, role string) (int, err
 	}
 }
 
-func GetAllUsers()([]structures.User2) {
+func GetAllUsers() []structures.User2 {
 	query := "SELECT * FROM user"
 	result, err := DB.Query(query)
 	if err != nil {
@@ -37,61 +36,61 @@ func GetAllUsers()([]structures.User2) {
 		if err := result.Scan(&user.Id, &user.Email, &user.Name, &user.Password, &user.Role); err != nil {
 			log.Fatal(err)
 		}
-		users_data = append(users_data , user)
+		users_data = append(users_data, user)
 	}
 	return users_data
 }
 
-func GetUsersId(id int)(structures.User2){
+func GetUsersId(id int) structures.User2 {
 	query := "SELECT * FROM user WHERE user_id = (?)"
-	result,err := DB.Query(query , id)
+	result, err := DB.Query(query, id)
 	var user structures.User2
 	defer result.Close()
-	if(err != nil){
+	if err != nil {
 		log.Fatal("There is some error in finding this id or it doesn't exists")
-		} else{
-			for result.Next() {
-				if err := result.Scan(&user.Id, &user.Email, &user.Name, &user.Password, &user.Role); err != nil {
-					log.Fatal(err)
-				}
+	} else {
+		for result.Next() {
+			if err := result.Scan(&user.Id, &user.Email, &user.Name, &user.Password, &user.Role); err != nil {
+				log.Fatal(err)
 			}
 		}
-		return user
 	}
-	
+	return user
+}
+
 func FindEmail(email string) bool {
 	query := "SELECT * FROM user WHERE email = (?)"
-	result,err := DB.Query(query , email)
-	if(err != nil){
-		log.Fatal("There is some error in email in login : " , err)
+	result, err := DB.Query(query, email)
+	if err != nil {
+		log.Fatal("There is some error in email in login : ", err)
 		defer result.Close()
 		return false
-		} else{
-			if !result.Next() {
-				defer result.Close()
-				return true
-				} else{
-					defer result.Close()
-					return false
-				}
-			}
+	} else {
+		if !result.Next() {
+			defer result.Close()
+			return true
+		} else {
+			defer result.Close()
+			return false
 		}
-		
-func FindPassword(email string) (string,string) {
+	}
+}
+
+func FindPassword(email string) (string, string) {
 	query := "SELECT * FROM user WHERE email = (?)"
-	result,err := DB.Query(query , email)
+	result, err := DB.Query(query, email)
 	var user structures.User2
-	if(err != nil){
-		log.Fatal("There is some error in email in login : " , err)
+	if err != nil {
+		log.Fatal("There is some error in email in login : ", err)
 		defer result.Close()
-		return "",""
-		} else{
-			for result.Next() {
-				if err := result.Scan(&user.Id, &user.Email, &user.Name, &user.Password, &user.Role); err != nil {
-					log.Fatal(err)
-				}
+		return "", ""
+	} else {
+		for result.Next() {
+			if err := result.Scan(&user.Id, &user.Email, &user.Name, &user.Password, &user.Role); err != nil {
+				log.Fatal(err)
 			}
 		}
-		defer result.Close()
-	return user.Password,user.Role
+	}
+	defer result.Close()
+	return user.Password, user.Role
 }
