@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+
 	// "mux"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -31,7 +32,7 @@ var users []User
 
 type Error struct {
 	Code    int    `json:"status_code"`
-	Message string `json:"error"`
+	Message string `json:"message"`
 }
 
 func Home_handler(w http.ResponseWriter, r *http.Request) {
@@ -78,7 +79,7 @@ func Render_signup(w http.ResponseWriter, r *http.Request) {
 							newUser.Password = string(hashedPassword)
 							newUser.Repassword = string(hashedPassword2)
 							users = append(users, newUser)
-							models.Add_users(newUser.Email , newUser.Name , newUser.Password , newUser.Role)
+							models.Add_users(newUser.Email, newUser.Name, newUser.Password, newUser.Role)
 							fmt.Fprint(w, "Data has been added successfully")
 						} else {
 							var errorAPi = Error{
@@ -121,7 +122,10 @@ func Getdata_signup(w http.ResponseWriter, r *http.Request) {
 			json.NewEncoder(w).Encode(errorAPi)
 		}
 	} else {
-		fmt.Fprintf(w, "There is no data of users right now")
+		var err Error
+		err.Code = http.StatusBadRequest
+		err.Message = "There is no data of users right now"
+		json.NewEncoder(w).Encode(err)
 	}
 
 }
@@ -138,44 +142,53 @@ func Render_login(w http.ResponseWriter, r *http.Request) {
 		}
 		json.NewEncoder(w).Encode(errorAPi)
 	} else {
-		var counter int = 0;
-			if (models.Find_email(loginUser.Email)) {
-				password,role := models.Find_password(loginUser.Email)
-				fmt.Println(password , role , loginUser.Password)
-				err = bcrypt.CompareHashAndPassword([]byte(password), []byte(loginUser.Password))
-				if err == nil {
-					jwtToken, err := middlewares.Create_token(loginUser.Email, role)
-					if err != nil {
-						fmt.Fprintf(w, "There is some error in generating jwt token")
-					} else {
-						fmt.Fprintf(w, "You are successfully logged in %v", jwtToken)
-					}
+		var counter int = 0
+		if !models.Find_email(loginUser.Email) {
+			password, role := models.Find_password(loginUser.Email)
+			fmt.Println(password, role, loginUser.Password)
+			err = bcrypt.CompareHashAndPassword([]byte(password), []byte(loginUser.Password))
+			if err == nil {
+				jwtToken, err := middlewares.Create_token(loginUser.Email, role)
+				if err != nil {
+					var err Error
+					err.Code = http.StatusBadRequest
+					err.Message = "There is some error in generating jwt token"
+					json.NewEncoder(w).Encode(err)
 				} else {
-					var errorAPi = Error{
-						Code:    http.StatusForbidden,
-						Message: "Your password is wrong for logging in please check once",
-					}
-					json.NewEncoder(w).Encode(errorAPi)
+					var succ Error
+					succ.Code = http.StatusAccepted
+					succ.Message = jwtToken
+					json.NewEncoder(w).Encode(succ)
 				}
 			} else {
-				if(counter == len(users)){
-					var errorAPi = Error{
-						Code:    http.StatusForbidden,
-						Message: "Your email is wrong for logging in please check once",
-					}
-					json.NewEncoder(w).Encode(errorAPi)
+				var errorAPi = Error{
+					Code:    http.StatusForbidden,
+					Message: "Your password is wrong for logging in please check once",
 				}
+				json.NewEncoder(w).Encode(errorAPi)
+			}
+		} else {
+			if counter == len(users) {
+				var errorAPi = Error{
+					Code:    http.StatusForbidden,
+					Message: "Your email is wrong for logging in please check once",
+				}
+				json.NewEncoder(w).Encode(errorAPi)
+			}
 		}
 	}
 }
 
-func Getiddata_signup(w http.ResponseWriter, r *http.Request){
+func Getiddata_signup(w http.ResponseWriter, r *http.Request) {
 	id := r.PathValue("id")
 	fmt.Println(id)
-	num,err := strconv.Atoi(id)
+	num, errr := strconv.Atoi(id)
 	fmt.Println(num)
-	if(err != nil){
-		fmt.Fprintf(w,err.Error())
+	if errr != nil {
+		var err Error
+		err.Code = http.StatusBadRequest
+		err.Message = errr.Error()
+		json.NewEncoder(w).Encode(err)
 	}
 	user := models.Get_users_id(num)
 	json.NewEncoder(w).Encode(&user)
@@ -193,27 +206,37 @@ func Auth_redirection(w http.ResponseWriter, r *http.Request) {
 		} else if role == "admin" {
 			http.Redirect(w, r, "/admin", http.StatusSeeOther)
 		} else {
-			fmt.Fprintf(w, "This is a protected route and you are not allowed")
+			var err Error
+			err.Code = http.StatusBadRequest
+			err.Message = "This is a protected route and you are not allowed"
+			json.NewEncoder(w).Encode(err)
 		}
 	} else {
-		fmt.Fprintf(w, "Your jwt token has expired please login again")
+		var err Error
+		err.Code = http.StatusBadRequest
+		err.Message = "Your jwt token has expired please login again"
+		json.NewEncoder(w).Encode(err)
 	}
 }
-
-
 
 func Admin_render(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	jwtToken := r.Header.Get("Authorization")
 	state, _, role := middlewares.Verify_token(jwtToken)
 	if !state {
-		fmt.Fprintf(w, "Your jwt token has expired please login again")
+		var err Error
+		err.Code = http.StatusBadRequest
+		err.Message = "Your jwt token has expired please login again"
+		json.NewEncoder(w).Encode(err)
 	} else if role != "admin" {
-		fmt.Fprintf(w, "This is a protected route and you are not allowed")
-	}else{
-		fmt.Fprintf(w, "Welcome admin")
+		var err Error
+		err.Code = http.StatusBadRequest
+		err.Message = "This is a protected route and you are not allowed"
+		json.NewEncoder(w).Encode(err)
+	} else {
+		var succ Error
+		succ.Code = http.StatusBadRequest
+		succ.Message = "Welcome admin"
+		json.NewEncoder(w).Encode(succ)
 	}
 }
-
-
-

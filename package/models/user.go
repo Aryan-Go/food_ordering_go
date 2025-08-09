@@ -74,10 +74,10 @@ func Find_email(email string) bool {
 		} else{
 			if !result.Next() {
 				defer result.Close()
-				return false
+				return true
 				} else{
 					defer result.Close()
-					return true
+					return false
 				}
 			}
 		}
