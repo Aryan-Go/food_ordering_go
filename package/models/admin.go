@@ -33,7 +33,7 @@ func Find_payment(quant []int, food_id []int) float64 {
 					log.Fatal("There is some error in scanning for details", err)
 				} else {
 					total_price = total_price + (float64(quant[i]) * food_item.Price)
-
+					defer result.Close()
 				}
 			}
 		}
@@ -65,17 +65,18 @@ func Find_total_payment(order_id int, customer_id int) float64 {
 			}
 		}
 	}
+	defer result.Close()
 	return details.Total_price
 }
 
-type Order struct{
-	Order_id int `json:"order_id"`
-    Customer_id int `json:"customer_id"`
-    Food_status string `json:"food_status"`
-    Chef_id int `json:"chef_id"`
+type Order struct {
+	Order_id    int    `json:"order_id"`
+	Customer_id int    `json:"customer_id"`
+	Food_status string `json:"food_status"`
+	Chef_id     int    `json:"chef_id"`
 }
 
-func Incomplete_order_id()([]int) {
+func Incomplete_order_id() []int {
 	status := "left"
 	query := "SELECT * FROM order_table WHERE food_status=?"
 	var ids []int
@@ -84,19 +85,20 @@ func Incomplete_order_id()([]int) {
 	if err != nil {
 		log.Fatal("There is some error in getting the required details")
 	} else {
-		for result.Next(){
-			err := result.Scan(&orderdetails.Order_id , &orderdetails.Customer_id , &orderdetails.Food_status,&orderdetails.Chef_id)
-			if(err != nil){
+		for result.Next() {
+			err := result.Scan(&orderdetails.Order_id, &orderdetails.Customer_id, &orderdetails.Food_status, &orderdetails.Chef_id)
+			if err != nil {
 				log.Fatal("There is some error in scanning the details for incomplete order id")
-			} else{
+			} else {
 				ids = append(ids, orderdetails.Order_id)
 			}
 		}
 	}
+	defer result.Close()
 	return ids
 }
 
-func Unpaid_order_id()([]int) {
+func Unpaid_order_id() []int {
 	status := "left"
 	query := "SELECT * FROM payment_table WHERE payment_status=?"
 	var ids []int
@@ -105,15 +107,27 @@ func Unpaid_order_id()([]int) {
 	if err != nil {
 		log.Fatal("There is some error in getting the required details")
 	} else {
-		for result.Next(){
+		for result.Next() {
 			err := result.Scan(&details.Total_price, &details.Tip, &details.Payment_status, &details.Order_id, &details.Customer_id, &details.Payment_id)
 			if err != nil {
 				log.Fatal("There is some error in scanning details for payment : ", err)
-			}else{
+			} else {
 				ids = append(ids, details.Order_id)
 			}
 		}
 	}
+	defer result.Close()
 	return ids
 }
 
+func Update_payment_table(order_id int, customer_id int) {
+	payment_status_2 := "completed"
+	payment_status_1 := "left"
+	query := "UPDATE payment_table SET payment_status = ? WHERE customer_id = ? AND payment_status = ? AND order_id = ?"
+	_, err := DB.Exec(query, payment_status_2, customer_id, payment_status_1, order_id)
+	if(err != nil){
+		log.Fatal("There is some error in completing the payment : " , err)
+	} else{
+		fmt.Println("The payment is completed")
+	}
+}

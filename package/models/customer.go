@@ -39,6 +39,7 @@ func Get_menu() []Food {
 			menu_data = append(menu_data, food)
 		}
 	}
+	defer result.Close()
 	return menu_data
 }
 
@@ -51,9 +52,11 @@ func Find_free_chef() int {
 	var user User
 	if(err != nil){
 		log.Fatal("There is some error in finding a free chef : " , err)
+		defer result.Close()
 		return -1
 	} else{
 		if(!result.Next()){
+			defer result.Close()
 			return -1
 		} else{
 			if err := result.Scan(&user.Id, &user.Email, &user.Name, &user.Password, &user.Role); err != nil {
@@ -61,6 +64,7 @@ func Find_free_chef() int {
 				}
 		}
 	}
+	defer result.Close()
 	return user.Id
 }
 
@@ -90,16 +94,20 @@ func Find_customer_id(email string) int {
 	var user User
 	if(err != nil){
 		log.Fatal("There is some error in finding a customer : " , err)
+		defer result.Close()
 		return -1
 	} else{
 		if(!result.Next()){
+			defer result.Close()
 			return -1
 		} else{
 			if err := result.Scan(&user.Id, &user.Email, &user.Name, &user.Password, &user.Role); err != nil {
+				defer result.Close()
 				log.Fatal(err)
 				}
 		}
 	}
+	defer result.Close()
 	return user.Id
 }
 
@@ -110,11 +118,14 @@ func Find_email_id(email string) bool {
 	result,err := DB.Query(query , role , email)
 	if(err != nil){
 		log.Fatal("There is some error in finding a customer : " , err)
+		defer result.Close()
 		return false
 	} else{
 		if(!result.Next()){
+			defer result.Close()
 			return false
 		} else{
+			defer result.Close()
 			return true
 		}
 	}
@@ -149,6 +160,7 @@ func Get_orders(order_id int)([]Food_added){
     result,err := DB.Query(query, order_id, food_status);
 	if(err != nil){
 		log.Fatal("There is some error in getting data from the ordered_items : " , err)
+		defer result.Close()
 		} else{
 			for result.Next(){
 				var food_item Food_added
@@ -161,6 +173,7 @@ func Get_orders(order_id int)([]Food_added){
 				food_slice = append(food_slice, food_item)
 			}
 		}
+		defer result.Close()
 		return food_slice;
 }
 
@@ -169,6 +182,7 @@ func Get_food_name(food_id int)string{
 	result,err := DB.Query(query , food_id)
 	var food_item Food
 	if(err != nil){
+		defer result.Close()
 		log.Fatal("There is some error getting the food name" , err)
 	} else{
 		for result.Next(){
@@ -178,6 +192,7 @@ func Get_food_name(food_id int)string{
 			}
 		}
 	}
+	defer result.Close()
   return food_item.Name;
 }
 

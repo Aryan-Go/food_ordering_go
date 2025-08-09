@@ -36,6 +36,7 @@ func Get_all_users()([]User) {
 	if err != nil {
 		log.Fatal("There is some error in database to get all the data", err)
 	}
+	defer result.Close()
 	for result.Next() {
 		var user User
 		if err := result.Scan(&user.Id, &user.Email, &user.Name, &user.Password, &user.Role); err != nil {
@@ -50,6 +51,7 @@ func Get_users_id(id int)(User){
 	query := "SELECT * FROM user WHERE user_id = (?)"
 	result,err := DB.Query(query , id)
 	var user User
+	defer result.Close()
 	if(err != nil){
 		log.Fatal("There is some error in finding this id or it doesn't exists")
 		} else{
@@ -67,11 +69,14 @@ func Find_email(email string) bool {
 	result,err := DB.Query(query , email)
 	if(err != nil){
 		log.Fatal("There is some error in email in login : " , err)
+		defer result.Close()
 		return false
 		} else{
 			if !result.Next() {
+				defer result.Close()
 				return false
 				} else{
+					defer result.Close()
 					return true
 				}
 			}
@@ -83,6 +88,7 @@ func Find_password(email string) (string,string) {
 	var user User
 	if(err != nil){
 		log.Fatal("There is some error in email in login : " , err)
+		defer result.Close()
 		return "",""
 		} else{
 			for result.Next() {
@@ -91,5 +97,6 @@ func Find_password(email string) (string,string) {
 				}
 			}
 		}
+		defer result.Close()
 	return user.Password,user.Role
 }

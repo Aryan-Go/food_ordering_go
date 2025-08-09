@@ -37,6 +37,7 @@ func Render_payment(w http.ResponseWriter, r *http.Request) {
 			var pay_details Payment_details
 			pay_details.Final_payment = final_payment
 			pay_details.Tip = detials.Tip
+			models.Update_payment_table(detials.Order_id , models.Find_customer_id(email))
 			json.NewEncoder(w).Encode(pay_details)
 		}
 	}

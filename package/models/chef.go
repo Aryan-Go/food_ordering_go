@@ -34,6 +34,7 @@ func Complete_order(order_id int) bool {
 	result, err := DB.Query(query2, order_id)
 	if err != nil {
 		log.Fatal("There is some error in gettinf data from ordered items", err)
+		defer result.Close()
 	} else {
 		counter1 := 0
 		counter2 := 0
@@ -44,6 +45,7 @@ func Complete_order(order_id int) bool {
 			err := result.Scan(&food_item.Id, &food_item.Quant, &food_item.Instruct, &food_item.Order_status, &food_item.Food_status)
 			if err != nil {
 				log.Fatal("There is some error in scaiing for values for added food items")
+				defer result.Close()
 				return false
 			} else {
 				if food_item.Food_status == "left" {
@@ -59,11 +61,13 @@ func Complete_order(order_id int) bool {
 			_, err := DB.Exec(query3, food_status, order_id)
 			if err != nil {
 				log.Fatal("There is some error in updating the order table status", err)
+				defer result.Close()
 				return false
 			} else {
 				fmt.Println("This order is completed in order table")
 			}
 		}
 	}
+	defer result.Close()
 	return true
 }
