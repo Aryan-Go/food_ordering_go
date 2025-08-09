@@ -42,7 +42,7 @@ func PasswordVerification(password string) bool {
 }
 
 func GetDotenvData() string {
-	config, err := backend.LoadConfig("../")
+	config, err := backend.LoadConfig(".")
 	if err != nil {
         log.Fatal("cannot load config:", err)
 		return ""

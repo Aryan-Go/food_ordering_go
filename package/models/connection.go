@@ -14,7 +14,7 @@ import (
 var DB *sql.DB
 
 func InitDatabase() (*sql.DB, error) {
-	config, err := backend.LoadConfig("../")
+	config, err := backend.LoadConfig(".")
 	if err != nil {
 		log.Fatalf("Error loading .env file: %s", err)
 		return nil, err

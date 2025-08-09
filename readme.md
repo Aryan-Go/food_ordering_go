@@ -15,14 +15,11 @@ db_port=3306
 
 To run the main follow the following commands
 ```
-$ cd command
-$ go run main.go
+$ make run
 ```
 
 To run the tests follow the following commands
 ```
-$ cd package
-$ cd middlewares
-$ go test -v
+$
 ```
 
