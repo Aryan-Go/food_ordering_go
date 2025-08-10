@@ -1,10 +1,15 @@
 package middlewares
 
 import (
+	"context"
+	"encoding/json"
 	"fmt"
 	backend "github/aryan-go/food_ordering_go"
+	"github/aryan-go/food_ordering_go/package/structures"
 	"log"
+	"net/http"
 	"regexp"
+	"strings"
 	"time"
 	"unicode"
 
@@ -67,21 +72,162 @@ func CreateToken(email string, role string) (string, error) {
 	return tokenString, nil
 }
 
-func VerifyToken(tokenString string) (bool, string, string) {
-	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		return []byte(GetDotenvData()), nil
+func VerifyToken(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		authHeader := strings.Split(r.Header.Get("Authorization"), "Bearer ")
+		if len(authHeader) != 2 {
+			fmt.Println("Malformed token cus")
+			var err structures.Error
+			err.Code = http.StatusUnauthorized
+			err.Message = "Malformed Token"
+			json.NewEncoder(w).Encode(err)
+		} else {
+			jwtToken := authHeader[1]
+			token, err := jwt.Parse(jwtToken, func(token *jwt.Token) (interface{}, error) {
+				config, err := backend.LoadConfig(".")
+				if err != nil {
+					log.Fatal(err)
+				}
+				if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+					return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+				}
+				return []byte(config.Secret_key), nil
+			})
+			if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+				ctx := context.WithValue(r.Context(), "props", claims)
+				next.ServeHTTP(w, r.WithContext(ctx))
+			} else {
+				fmt.Println(err)
+				var err structures.Error
+				err.Code = http.StatusUnauthorized
+				err.Message = "Unauthorized"
+				json.NewEncoder(w).Encode(err)
+			}
+		}
 	})
+}
 
-	if err != nil {
-		fmt.Printf("Error in verifying jwt: %s", err)
-		return false, "", ""
-	}
+func JWTAuthMiddlewareCustomer(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		authHeader := strings.Split(r.Header.Get("Authorization"), "Bearer ")
+		if len(authHeader) != 2 {
+			fmt.Println("Malformed token cus")
+			var err structures.Error
+			err.Code = http.StatusUnauthorized
+			err.Message = "Malformed Token"
+			json.NewEncoder(w).Encode(err)
+		} else {
+			jwtToken := authHeader[1]
+			token, err := jwt.Parse(jwtToken, func(token *jwt.Token) (interface{}, error) {
+				config, err := backend.LoadConfig(".")
+				if err != nil {
+					log.Fatal(err)
+				}
+				if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+					return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+				}
+				return []byte(config.Secret_key), nil
+			})
+			if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+				if claims["role"] != "customer" {
+					var err structures.Error
+					err.Code = http.StatusUnauthorized
+					err.Message = "This is a protected route where only customer is allowed"
+					json.NewEncoder(w).Encode(err)
+				} else {
+					ctx := context.WithValue(r.Context(), "props", claims)
+					next.ServeHTTP(w, r.WithContext(ctx))
+				}
+			} else {
+				fmt.Println(err)
+				var err structures.Error
+				err.Code = http.StatusUnauthorized
+				err.Message = "Unauthorized"
+				json.NewEncoder(w).Encode(err)
+			}
+		}
+	})
+}
 
-	if !token.Valid {
-		return false, "", ""
-	}
-	if claims, ok := token.Claims.(jwt.MapClaims); ok {
-		return true, claims["email"].(string), claims["role"].(string)
-	}
-	return false, "", ""
+func JWTAuthMiddlewareChef(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		authHeader := strings.Split(r.Header.Get("Authorization"), "Bearer ")
+		if len(authHeader) != 2 {
+			fmt.Println("Malformed token chef")
+			var err structures.Error
+			err.Code = http.StatusUnauthorized
+			err.Message = "Malformed Token"
+			json.NewEncoder(w).Encode(err)
+		} else {
+			jwtToken := authHeader[1]
+			token, err := jwt.Parse(jwtToken, func(token *jwt.Token) (interface{}, error) {
+				config, _ := backend.LoadConfig(".")
+				if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+					return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+				}
+				return []byte(config.Secret_key), nil
+			})
+			if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+				if claims["role"] != "chef" {
+					var err structures.Error
+					err.Code = http.StatusUnauthorized
+					err.Message = "This is a protected route where only chef is allowed"
+					json.NewEncoder(w).Encode(err)
+				} else {
+					ctx := context.WithValue(r.Context(), "props", claims)
+					next.ServeHTTP(w, r.WithContext(ctx))
+				}
+			} else {
+				fmt.Println(err)
+				var err structures.Error
+				err.Code = http.StatusUnauthorized
+				err.Message = "Unauthorized"
+				json.NewEncoder(w).Encode(err)
+			}
+		}
+	})
+}
+
+func JWTAuthMiddlewareAdmin(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		authHeader := strings.Split(r.Header.Get("Authorization"), "Bearer ")
+		if len(authHeader) != 2 {
+			fmt.Println("Malformed token adm")
+			var err structures.Error
+			err.Code = http.StatusUnauthorized
+			err.Message = "Malformed Token"
+			json.NewEncoder(w).Encode(err)
+		} else {
+			jwtToken := authHeader[1]
+			token, err := jwt.Parse(jwtToken, func(token *jwt.Token) (interface{}, error) {
+				config, _ := backend.LoadConfig(".")
+				if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+					return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+				}
+				return []byte(config.Secret_key), nil
+			})
+			if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+				if claims["role"] != "admin" {
+					var err structures.Error
+					err.Code = http.StatusUnauthorized
+					err.Message = "This is a protected route where only admin is allowed"
+					json.NewEncoder(w).Encode(err)
+				} else if claims["email"] != "admin@gmail.com" {
+					var err structures.Error
+					err.Code = http.StatusUnauthorized
+					err.Message = "This is a protected route and you cannot just put a role admin and enter this route"
+					json.NewEncoder(w).Encode(err)
+				} else {
+					ctx := context.WithValue(r.Context(), "props", claims)
+					next.ServeHTTP(w, r.WithContext(ctx))
+				}
+			} else {
+				fmt.Println(err)
+				var err structures.Error
+				err.Code = http.StatusUnauthorized
+				err.Message = "Unauthorized"
+				json.NewEncoder(w).Encode(err)
+			}
+		}
+	})
 }

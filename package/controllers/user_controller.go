@@ -11,6 +11,7 @@ import (
 	"strconv"
 
 	// "mux"
+	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -55,7 +56,7 @@ func SignupHandler(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(errorAPi)
 		return
 	}
-	if newUser.Role != "customer" || newUser.Role != "admin" || newUser.Role != "chef" {
+	if newUser.Role != "customer" {
 		var errorAPi = structures.Error{
 			Code:    http.StatusBadRequest,
 			Message: "Please put a valid role",
@@ -117,37 +118,20 @@ func SignupHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetUsersData(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-	jwtToken := r.Header.Get("Authorization")
-	state, _, role := middlewares.VerifyToken(jwtToken)
-	if state {
-		if role != "admin" {
-			var err structures.Error
-			err.Code = http.StatusBadRequest
-			err.Message = "This is a protected route and you are not allowed"
-			json.NewEncoder(w).Encode(err)
-		} else {
-			users := models.GetAllUsers()
-			if len(users) != 0 {
-				err := json.NewEncoder(w).Encode(&users)
-				if err != nil {
-					var errorAPi = structures.Error{
-						Code:    http.StatusBadRequest,
-						Message: err.Error(),
-					}
-					json.NewEncoder(w).Encode(errorAPi)
-				}
-			} else {
-				var err structures.Error
-				err.Code = http.StatusBadRequest
-				err.Message = "There is no data of users right now"
-				json.NewEncoder(w).Encode(err)
+	users := models.GetAllUsers()
+	if len(users) != 0 {
+		err := json.NewEncoder(w).Encode(&users)
+		if err != nil {
+			var errorAPi = structures.Error{
+				Code:    http.StatusBadRequest,
+				Message: err.Error(),
 			}
+			json.NewEncoder(w).Encode(errorAPi)
 		}
 	} else {
 		var err structures.Error
 		err.Code = http.StatusBadRequest
-		err.Message = "Your jwt token has expired please login again"
+		err.Message = "There is no data of users right now"
 		json.NewEncoder(w).Encode(err)
 	}
 }
@@ -217,54 +201,35 @@ func GetidDataSignup(w http.ResponseWriter, r *http.Request) {
 }
 
 func AuthRedirection(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-	jwtToken := r.Header.Get("Authorization")
-	state, _, role := middlewares.VerifyToken(jwtToken)
-	if state {
-		if role == "customer" {
-			http.Redirect(w, r, "/customer", http.StatusSeeOther)
-		} else if role == "chef" {
-			http.Redirect(w, r, "/chef", http.StatusSeeOther)
-		} else if role == "admin" {
-			http.Redirect(w, r, "/admin", http.StatusSeeOther)
-		} else {
-			var err structures.Error
-			err.Code = http.StatusBadRequest
-			err.Message = "This is a protected route and you are not allowed"
-			json.NewEncoder(w).Encode(err)
-		}
+	props := r.Context().Value("props")
+	if props == nil {
+		http.Error(w, "No claims found in context", http.StatusUnauthorized)
+		return
+	}
+	claims, ok := props.(jwt.MapClaims)
+	if !ok {
+		http.Error(w, "Invalid claims type", http.StatusInternalServerError)
+		return
+	}
+	role := claims["role"].(string)
+	if role == "customer" {
+		http.Redirect(w, r, "/customer", http.StatusSeeOther)
+	} else if role == "chef" {
+		http.Redirect(w, r, "/chef", http.StatusSeeOther)
+	} else if role == "admin" {
+		http.Redirect(w, r, "/admin", http.StatusSeeOther)
 	} else {
 		var err structures.Error
 		err.Code = http.StatusBadRequest
-		err.Message = "Your jwt token has expired please login again"
+		err.Message = "This is a protected route and you are not allowed"
 		json.NewEncoder(w).Encode(err)
 	}
 }
 
 func AdminHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-	jwtToken := r.Header.Get("Authorization")
-	state, email, role := middlewares.VerifyToken(jwtToken)
-	if !state {
-		var err structures.Error
-		err.Code = http.StatusBadRequest
-		err.Message = "Your jwt token has expired please login again"
-		json.NewEncoder(w).Encode(err)
-	} else if role != "admin" {
-		if email != "admin@gmail.com" {
-			var err structures.Error
-			err.Code = http.StatusBadRequest
-			err.Message = "This is a protected route and you cannot just put a role admin and enter this route"
-			json.NewEncoder(w).Encode(err)
-		}
-		var err structures.Error
-		err.Code = http.StatusBadRequest
-		err.Message = "This is a protected route and you are not allowed"
-		json.NewEncoder(w).Encode(err)
-	} else {
-		var succ structures.Error
-		succ.Code = http.StatusBadRequest
-		succ.Message = "Welcome admin"
-		json.NewEncoder(w).Encode(succ)
-	}
+
+	var succ structures.Error
+	succ.Code = http.StatusBadRequest
+	succ.Message = "Welcome admin"
+	json.NewEncoder(w).Encode(succ)
 }
