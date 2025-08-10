@@ -17,7 +17,7 @@ func All_routes() *mux.Router {
 	user.HandleFunc("/auth_redirect", controllers.AuthRedirection).Methods("POST")
 	// r.HandleFunc("/signup/{id}", controllers.Getiddata_signup).Methods("POST")
 	// r.HandleFunc("/logout" , controllers.Logout_handler).Methods("GET")
-	
+
 	customer := r.PathPrefix("/customer").Subrouter()
 	customer.Use(middlewares.JWTAuthMiddlewareCustomer)
 	customer.HandleFunc("", controllers.CustomerHandler).Methods("GET")
@@ -26,13 +26,13 @@ func All_routes() *mux.Router {
 	customer.HandleFunc("/render_waiting", controllers.GetOrderedItems).Methods("GET")
 	customer.HandleFunc("/render_payment", controllers.PaymentHandler).Methods("GET")
 	customer.HandleFunc("/food_items_added", controllers.FoodItemsAdded).Methods("POST")
-	
+
 	chef := r.PathPrefix("/chef").Subrouter()
 	chef.Use(middlewares.JWTAuthMiddlewareChef)
 	chef.HandleFunc("", controllers.ChefHandler).Methods("GET")
 	chef.HandleFunc("/render_order", controllers.GetOrderedItems).Methods("GET")
 	chef.HandleFunc("/complete_order", controllers.CompleteOrder).Methods("POST")
-	
+
 	admin := r.PathPrefix("/admin").Subrouter()
 	admin.HandleFunc("/signup", controllers.GetUsersData).Methods("POST")
 	admin.Use(middlewares.JWTAuthMiddlewareAdmin)
