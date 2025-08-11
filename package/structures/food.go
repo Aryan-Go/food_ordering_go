@@ -17,7 +17,7 @@ type Complete_item struct {
 
 type Incomplete struct {
 	Order_id_order   []int
-	Order_id_payment []int
+	Payment_id []int
 	Customer_chef_id []int
 }
 

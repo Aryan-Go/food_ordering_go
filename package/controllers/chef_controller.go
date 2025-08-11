@@ -36,22 +36,24 @@ func CompleteOrder(w http.ResponseWriter, r *http.Request) {
 		err.Code = http.StatusBadRequest
 		err.Message = "There is some error in getting the order id"
 		json.NewEncoder(w).Encode(err)
-	} else {
-		fmt.Println(order_id.Order_id)
-		check_item := models.CompleteOrderItem(order_id.Order_id, "completed", order_id.Food_id)
-		// check_item := models.Complete_order_item(6 , "left" , 1)
-		check_order := models.CompleteOrder(order_id.Order_id)
-		if check_item && !check_order {
-			var succ structures.Error
-			succ.Code = http.StatusAccepted
-			succ.Message = "The order item has been completed"
-			json.NewEncoder(w).Encode(succ)
-		}
-		if check_order {
-			var succ structures.Error
-			succ.Code = http.StatusAccepted
-			succ.Message = "The order has been completed"
-			json.NewEncoder(w).Encode(succ)
-		}
+		return
+	}
+	fmt.Println(order_id.Order_id)
+	check_item := models.CompleteOrderItem(order_id.Order_id, "completed", order_id.Food_id)
+	// check_item := models.Complete_order_item(6 , "left" , 1)
+	check_order := models.CompleteOrder(order_id.Order_id)
+	if check_item && !check_order {
+		var succ structures.Error
+		succ.Code = http.StatusAccepted
+		succ.Message = "The order item has been completed"
+		json.NewEncoder(w).Encode(succ)
+		return
+	}
+	if check_order {
+		var succ structures.Error
+		succ.Code = http.StatusAccepted
+		succ.Message = "The order has been completed"
+		json.NewEncoder(w).Encode(succ)
+		return
 	}
 }

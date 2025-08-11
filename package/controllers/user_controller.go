@@ -127,13 +127,13 @@ func GetUsersData(w http.ResponseWriter, r *http.Request) {
 				Message: err.Error(),
 			}
 			json.NewEncoder(w).Encode(errorAPi)
+			return
 		}
-	} else {
-		var err structures.Error
-		err.Code = http.StatusBadRequest
-		err.Message = "There is no data of users right now"
-		json.NewEncoder(w).Encode(err)
 	}
+	var err structures.Error
+	err.Code = http.StatusBadRequest
+	err.Message = "There is no data of users right now"
+	json.NewEncoder(w).Encode(err)
 }
 
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
@@ -147,41 +147,41 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 			Message: "There is some error with the email or password sent please send valid input for login",
 		}
 		json.NewEncoder(w).Encode(errorAPi)
-	} else {
-		var counter int = 0
-		if !models.FindEmail(loginUser.Email) {
-			password, role := models.FindPassword(loginUser.Email)
-			fmt.Println(password, role, loginUser.Password)
-			err = bcrypt.CompareHashAndPassword([]byte(password), []byte(loginUser.Password))
-			if err == nil {
-				jwtToken, err := middlewares.CreateToken(loginUser.Email, role)
-				if err != nil {
-					var err structures.Error
-					err.Code = http.StatusBadRequest
-					err.Message = "There is some error in generating jwt token"
-					json.NewEncoder(w).Encode(err)
-				} else {
-					var succ structures.Error
-					succ.Code = http.StatusAccepted
-					succ.Message = jwtToken
-					json.NewEncoder(w).Encode(succ)
-				}
-			} else {
-				var errorAPi = structures.Error{
-					Code:    http.StatusForbidden,
-					Message: "Your password is wrong for logging in please check once",
-				}
-				json.NewEncoder(w).Encode(errorAPi)
+		return
+	}
+	var counter int = 0
+	if !models.FindEmail(loginUser.Email) {
+		password, role := models.FindPassword(loginUser.Email)
+		fmt.Println(password, role, loginUser.Password)
+		err = bcrypt.CompareHashAndPassword([]byte(password), []byte(loginUser.Password))
+		if err == nil {
+			jwtToken, err := middlewares.CreateToken(loginUser.Email, role)
+			if err != nil {
+				var err structures.Error
+				err.Code = http.StatusBadRequest
+				err.Message = "There is some error in generating jwt token"
+				json.NewEncoder(w).Encode(err)
+				return
 			}
-		} else {
-			if counter == len(users) {
-				var errorAPi = structures.Error{
-					Code:    http.StatusForbidden,
-					Message: "Your email is wrong for logging in please check once",
-				}
-				json.NewEncoder(w).Encode(errorAPi)
-			}
+			var succ structures.Error
+			succ.Code = http.StatusAccepted
+			succ.Message = jwtToken
+			json.NewEncoder(w).Encode(succ)
+			return
 		}
+		var errorAPi = structures.Error{
+			Code:    http.StatusForbidden,
+			Message: "Your password is wrong for logging in please check once",
+		}
+		json.NewEncoder(w).Encode(errorAPi)
+		return
+	}
+	if counter == len(users) {
+		var errorAPi = structures.Error{
+			Code:    http.StatusForbidden,
+			Message: "Your email is wrong for logging in please check once",
+		}
+		json.NewEncoder(w).Encode(errorAPi)
 	}
 }
 
@@ -195,6 +195,7 @@ func GetidDataSignup(w http.ResponseWriter, r *http.Request) {
 		err.Code = http.StatusBadRequest
 		err.Message = errr.Error()
 		json.NewEncoder(w).Encode(err)
+		return
 	}
 	user := models.GetUsersId(num)
 	json.NewEncoder(w).Encode(&user)
@@ -214,16 +215,20 @@ func AuthRedirection(w http.ResponseWriter, r *http.Request) {
 	role := claims["role"].(string)
 	if role == "customer" {
 		http.Redirect(w, r, "/customer", http.StatusSeeOther)
-	} else if role == "chef" {
-		http.Redirect(w, r, "/chef", http.StatusSeeOther)
-	} else if role == "admin" {
-		http.Redirect(w, r, "/admin", http.StatusSeeOther)
-	} else {
-		var err structures.Error
-		err.Code = http.StatusBadRequest
-		err.Message = "This is a protected route and you are not allowed"
-		json.NewEncoder(w).Encode(err)
+		return
 	}
+	if role == "chef" {
+		http.Redirect(w, r, "/chef", http.StatusSeeOther)
+		return
+	}
+	if role == "admin" {
+		http.Redirect(w, r, "/admin", http.StatusSeeOther)
+		return
+	}
+	var err structures.Error
+	err.Code = http.StatusBadRequest
+	err.Message = "This is a protected route and you are not allowed"
+	json.NewEncoder(w).Encode(err)
 }
 
 func AdminHandler(w http.ResponseWriter, r *http.Request) {

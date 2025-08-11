@@ -37,6 +37,8 @@ func All_routes() *mux.Router {
 	admin.Use(middlewares.JWTAuthMiddlewareAdmin)
 	admin.HandleFunc("/signup", controllers.GetUsersData).Methods("GET")
 	admin.HandleFunc("/admin_chef_conversion", controllers.AdminConvertChef).Methods("POST")
+	admin.HandleFunc("/admin_payment_complete", controllers.AdminCompletePaymemt).Methods("POST")
+	// admin.HandleFunc("/admin_chef_conversion", controllers.AdminCompleteItem).Methods("POST")
 	admin.HandleFunc("", controllers.AdminHandler).Methods("GET")
 	admin.HandleFunc("/admin_details", controllers.AdminDetails).Methods("GET")
 	return r

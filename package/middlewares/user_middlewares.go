@@ -81,29 +81,29 @@ func VerifyToken(next http.Handler) http.Handler {
 			err.Code = http.StatusUnauthorized
 			err.Message = "Malformed Token"
 			json.NewEncoder(w).Encode(err)
-		} else {
-			jwtToken := authHeader[1]
-			token, err := jwt.Parse(jwtToken, func(token *jwt.Token) (interface{}, error) {
-				config, err := backend.LoadConfig(".")
-				if err != nil {
-					log.Fatal(err)
-				}
-				if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-					return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
-				}
-				return []byte(config.Secret_key), nil
-			})
-			if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-				ctx := context.WithValue(r.Context(), "props", claims)
-				next.ServeHTTP(w, r.WithContext(ctx))
-			} else {
-				fmt.Println(err)
-				var err structures.Error
-				err.Code = http.StatusUnauthorized
-				err.Message = "Unauthorized"
-				json.NewEncoder(w).Encode(err)
-			}
+			return
 		}
+		jwtToken := authHeader[1]
+		token, err := jwt.Parse(jwtToken, func(token *jwt.Token) (interface{}, error) {
+			config, err := backend.LoadConfig(".")
+			if err != nil {
+				log.Fatal(err)
+			}
+			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+				return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+			}
+			return []byte(config.Secret_key), nil
+		})
+		if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+			ctx := context.WithValue(r.Context(), "props", claims)
+			next.ServeHTTP(w, r.WithContext(ctx))
+			return
+		}
+		fmt.Println(err)
+		var err2 structures.Error
+		err2.Code = http.StatusUnauthorized
+		err2.Message = "Unauthorized"
+		json.NewEncoder(w).Encode(err2)
 	})
 }
 
@@ -116,36 +116,36 @@ func JWTAuthMiddlewareCustomer(next http.Handler) http.Handler {
 			err.Code = http.StatusUnauthorized
 			err.Message = "Malformed Token"
 			json.NewEncoder(w).Encode(err)
-		} else {
-			jwtToken := authHeader[1]
-			token, err := jwt.Parse(jwtToken, func(token *jwt.Token) (interface{}, error) {
-				config, err := backend.LoadConfig(".")
-				if err != nil {
-					log.Fatal(err)
-				}
-				if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-					return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
-				}
-				return []byte(config.Secret_key), nil
-			})
-			if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-				if claims["role"] != "customer" {
-					var err structures.Error
-					err.Code = http.StatusUnauthorized
-					err.Message = "This is a protected route where only customer is allowed"
-					json.NewEncoder(w).Encode(err)
-				} else {
-					ctx := context.WithValue(r.Context(), "props", claims)
-					next.ServeHTTP(w, r.WithContext(ctx))
-				}
-			} else {
-				fmt.Println(err)
+			return
+		}
+		jwtToken := authHeader[1]
+		token, err := jwt.Parse(jwtToken, func(token *jwt.Token) (interface{}, error) {
+			config, err := backend.LoadConfig(".")
+			if err != nil {
+				log.Fatal(err)
+			}
+			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+				return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+			}
+			return []byte(config.Secret_key), nil
+		})
+		if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+			if claims["role"] != "customer" {
 				var err structures.Error
 				err.Code = http.StatusUnauthorized
-				err.Message = "Unauthorized"
+				err.Message = "This is a protected route where only customer is allowed"
 				json.NewEncoder(w).Encode(err)
+				return
 			}
+			ctx := context.WithValue(r.Context(), "props", claims)
+			next.ServeHTTP(w, r.WithContext(ctx))
+			return
 		}
+		fmt.Println(err)
+		var err2 structures.Error
+		err2.Code = http.StatusUnauthorized
+		err2.Message = "Unauthorized"
+		json.NewEncoder(w).Encode(err2)
 	})
 }
 
@@ -158,33 +158,33 @@ func JWTAuthMiddlewareChef(next http.Handler) http.Handler {
 			err.Code = http.StatusUnauthorized
 			err.Message = "Malformed Token"
 			json.NewEncoder(w).Encode(err)
-		} else {
-			jwtToken := authHeader[1]
-			token, err := jwt.Parse(jwtToken, func(token *jwt.Token) (interface{}, error) {
-				config, _ := backend.LoadConfig(".")
-				if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-					return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
-				}
-				return []byte(config.Secret_key), nil
-			})
-			if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-				if claims["role"] != "chef" {
-					var err structures.Error
-					err.Code = http.StatusUnauthorized
-					err.Message = "This is a protected route where only chef is allowed"
-					json.NewEncoder(w).Encode(err)
-				} else {
-					ctx := context.WithValue(r.Context(), "props", claims)
-					next.ServeHTTP(w, r.WithContext(ctx))
-				}
-			} else {
-				fmt.Println(err)
+			return
+		}
+		jwtToken := authHeader[1]
+		token, err := jwt.Parse(jwtToken, func(token *jwt.Token) (interface{}, error) {
+			config, _ := backend.LoadConfig(".")
+			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+				return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+			}
+			return []byte(config.Secret_key), nil
+		})
+		if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+			if claims["role"] != "chef" {
 				var err structures.Error
 				err.Code = http.StatusUnauthorized
-				err.Message = "Unauthorized"
+				err.Message = "This is a protected route where only chef is allowed"
 				json.NewEncoder(w).Encode(err)
+				return
 			}
+			ctx := context.WithValue(r.Context(), "props", claims)
+			next.ServeHTTP(w, r.WithContext(ctx))
+			return
 		}
+		fmt.Println(err)
+		var err2 structures.Error
+		err2.Code = http.StatusUnauthorized
+		err2.Message = "Unauthorized"
+		json.NewEncoder(w).Encode(err2)
 	})
 }
 
@@ -197,37 +197,39 @@ func JWTAuthMiddlewareAdmin(next http.Handler) http.Handler {
 			err.Code = http.StatusUnauthorized
 			err.Message = "Malformed Token"
 			json.NewEncoder(w).Encode(err)
-		} else {
-			jwtToken := authHeader[1]
-			token, err := jwt.Parse(jwtToken, func(token *jwt.Token) (interface{}, error) {
-				config, _ := backend.LoadConfig(".")
-				if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-					return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
-				}
-				return []byte(config.Secret_key), nil
-			})
-			if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-				if claims["role"] != "admin" {
-					var err structures.Error
-					err.Code = http.StatusUnauthorized
-					err.Message = "This is a protected route where only admin is allowed"
-					json.NewEncoder(w).Encode(err)
-				} else if claims["email"] != "admin@gmail.com" {
-					var err structures.Error
-					err.Code = http.StatusUnauthorized
-					err.Message = "This is a protected route and you cannot just put a role admin and enter this route"
-					json.NewEncoder(w).Encode(err)
-				} else {
-					ctx := context.WithValue(r.Context(), "props", claims)
-					next.ServeHTTP(w, r.WithContext(ctx))
-				}
-			} else {
-				fmt.Println(err)
+			return
+		}
+		jwtToken := authHeader[1]
+		token, err := jwt.Parse(jwtToken, func(token *jwt.Token) (interface{}, error) {
+			config, _ := backend.LoadConfig(".")
+			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+				return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+			}
+			return []byte(config.Secret_key), nil
+		})
+		if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+			if claims["role"] != "admin" {
 				var err structures.Error
 				err.Code = http.StatusUnauthorized
-				err.Message = "Unauthorized"
+				err.Message = "This is a protected route where only admin is allowed"
 				json.NewEncoder(w).Encode(err)
+				return
 			}
+			if claims["email"] != "admin@gmail.com" {
+				var err structures.Error
+				err.Code = http.StatusUnauthorized
+				err.Message = "This is a protected route and you cannot just put a role admin and enter this route"
+				json.NewEncoder(w).Encode(err)
+				return
+			}
+			ctx := context.WithValue(r.Context(), "props", claims)
+			next.ServeHTTP(w, r.WithContext(ctx))
+			return
 		}
+		fmt.Println(err)
+		var err2 structures.Error
+		err2.Code = http.StatusUnauthorized
+		err2.Message = "Unauthorized"
+		json.NewEncoder(w).Encode(err2)
 	})
 }
