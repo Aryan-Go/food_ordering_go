@@ -34,9 +34,9 @@ func All_routes() *mux.Router {
 	chef.HandleFunc("/complete_order", controllers.CompleteOrder).Methods("POST")
 
 	admin := r.PathPrefix("/admin").Subrouter()
-	admin.HandleFunc("/signup", controllers.GetUsersData).Methods("POST")
-	admin.HandleFunc("/admin_chef_conversion", controllers.AdminConvertChef).Methods("POST")
 	admin.Use(middlewares.JWTAuthMiddlewareAdmin)
+	admin.HandleFunc("/signup", controllers.GetUsersData).Methods("GET")
+	admin.HandleFunc("/admin_chef_conversion", controllers.AdminConvertChef).Methods("POST")
 	admin.HandleFunc("", controllers.AdminHandler).Methods("GET")
 	admin.HandleFunc("/admin_details", controllers.AdminDetails).Methods("GET")
 	return r
