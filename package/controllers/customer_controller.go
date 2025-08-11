@@ -17,6 +17,8 @@ import (
 	// "golang.org/x/crypto/bcrypt"
 )
 
+var Customer_chef_arr []int
+
 func CustomerHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	var succ structures.Error
@@ -33,10 +35,10 @@ func CustomerChefConverter(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	email := claims["email"].(string)
-	models.CustomerToChef(email)
+	Customer_chef_arr = append(Customer_chef_arr, models.FindCustomerId(email))
 	var succ structures.Error
 	succ.Code = http.StatusAccepted
-	succ.Message = "The customer has been successfully turned into chef"
+	succ.Message = "The customer's request has been successfully sent to admin to be converted into chef"
 	json.NewEncoder(w).Encode(succ)
 }
 func MenuHandler(w http.ResponseWriter, r *http.Request) {

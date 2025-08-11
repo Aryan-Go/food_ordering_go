@@ -43,6 +43,7 @@ type Payment_details struct {
 type Incomplete struct {
 	Order_id_order   []int
 	Order_id_payment []int
+	Customer_chef_id []int
 }
 
 type User2 struct {
@@ -89,4 +90,8 @@ type Food_added struct {
 type Error struct {
 	Code    int    `json:"status_code"`
 	Message string `json:"message"`
+}
+
+type Customer_id struct {
+	Id int `json:"id"`
 }

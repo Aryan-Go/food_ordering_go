@@ -6,9 +6,9 @@ import (
 	"log"
 )
 
-func CustomerToChef(email string) {
-	query := "UPDATE user SET role = (?) WHERE email = (?)"
-	_, err := DB.Query(query, "chef", email)
+func CustomerToChef(id int) {
+	query := "UPDATE user SET role = (?) WHERE user_id = (?)"
+	_, err := DB.Query(query, "chef", id)
 	if err != nil {
 		log.Fatal("There is some problem in converting customer to chef", err)
 	}

@@ -10,7 +10,7 @@ import (
 func All_routes() *mux.Router {
 	r := mux.NewRouter()
 	r.HandleFunc("/", controllers.HomeHandler).Methods("GET")
-	r.HandleFunc("/login", controllers.LoginHandler).Methods("GET")
+	r.HandleFunc("/login", controllers.LoginHandler).Methods("POST")
 	r.HandleFunc("/signup", controllers.SignupHandler).Methods("POST")
 	user := r.PathPrefix("/user").Subrouter()
 	user.Use(middlewares.VerifyToken)
@@ -22,7 +22,7 @@ func All_routes() *mux.Router {
 	customer.Use(middlewares.JWTAuthMiddlewareCustomer)
 	customer.HandleFunc("", controllers.CustomerHandler).Methods("GET")
 	customer.HandleFunc("/menu_show", controllers.MenuHandler).Methods("GET")
-	customer.HandleFunc("/cus_chef", controllers.CustomerChefConverter).Methods("GET")
+	customer.HandleFunc("/cus_chef", controllers.CustomerChefConverter).Methods("POST")
 	customer.HandleFunc("/render_waiting", controllers.GetOrderedItems).Methods("GET")
 	customer.HandleFunc("/render_payment", controllers.PaymentHandler).Methods("GET")
 	customer.HandleFunc("/food_items_added", controllers.FoodItemsAdded).Methods("POST")
@@ -35,6 +35,7 @@ func All_routes() *mux.Router {
 
 	admin := r.PathPrefix("/admin").Subrouter()
 	admin.HandleFunc("/signup", controllers.GetUsersData).Methods("POST")
+	admin.HandleFunc("/admin_chef_conversion", controllers.AdminConvertChef).Methods("POST")
 	admin.Use(middlewares.JWTAuthMiddlewareAdmin)
 	admin.HandleFunc("", controllers.AdminHandler).Methods("GET")
 	admin.HandleFunc("/admin_details", controllers.AdminDetails).Methods("GET")
