@@ -7,7 +7,7 @@ import (
 
 // ? Here we will create functions to crud datatabase for the user
 
-var users_data []structures.User2
+var users_data []structures.Get_user
 
 func AddUsers(email string, name string, password string, role string) (int, error) {
 	query := "INSERT INTO user (email,username,password,role) VALUES (?,?,?,?)"
@@ -24,7 +24,7 @@ func AddUsers(email string, name string, password string, role string) (int, err
 	}
 }
 
-func GetAllUsers() []structures.User2 {
+func GetAllUsers() []structures.Get_user {
 	query := "SELECT * FROM user"
 	result, err := DB.Query(query)
 	if err != nil {
@@ -32,7 +32,7 @@ func GetAllUsers() []structures.User2 {
 	}
 	defer result.Close()
 	for result.Next() {
-		var user structures.User2
+		var user structures.Get_user
 		if err := result.Scan(&user.Id, &user.Email, &user.Name, &user.Password, &user.Role); err != nil {
 			log.Fatal(err)
 		}
@@ -41,10 +41,10 @@ func GetAllUsers() []structures.User2 {
 	return users_data
 }
 
-func GetUsersId(id int) structures.User2 {
+func GetUsersId(id int) structures.Get_user {
 	query := "SELECT * FROM user WHERE user_id = (?)"
 	result, err := DB.Query(query, id)
-	var user structures.User2
+	var user structures.Get_user
 	defer result.Close()
 	if err != nil {
 		log.Fatal("There is some error in finding this id or it doesn't exists")
@@ -79,7 +79,7 @@ func FindEmail(email string) bool {
 func FindPassword(email string) (string, string) {
 	query := "SELECT * FROM user WHERE email = (?)"
 	result, err := DB.Query(query, email)
-	var user structures.User2
+	var user structures.Get_user
 	if err != nil {
 		log.Fatal("There is some error in email in login : ", err)
 		defer result.Close()

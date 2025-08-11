@@ -42,7 +42,7 @@ func FindFreeChef() int {
 	comp_lef := "left"
 	query := "SELECT * FROM user WHERE role = ? AND NOT EXISTS (SELECT *  FROM  order_table WHERE order_table.food_status = ? AND order_table.chef_id = user.user_id);"
 	result, err := DB.Query(query, role, comp_lef)
-	var user structures.User2
+	var user structures.Get_user
 	if err != nil {
 		log.Fatal("There is some error in finding a free chef : ", err)
 		defer result.Close()
@@ -84,7 +84,7 @@ func FindCustomerId(email string) int {
 	role := "customer"
 	query := "SELECT * FROM user WHERE role = ? AND email = ?"
 	result, err := DB.Query(query, role, email)
-	var user structures.User2
+	var user structures.Get_user
 	if err != nil {
 		log.Fatal("There is some error in finding a customer : ", err)
 		defer result.Close()

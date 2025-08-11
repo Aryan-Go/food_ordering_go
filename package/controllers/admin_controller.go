@@ -22,7 +22,7 @@ func PaymentHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	email := claims["email"].(string)
-	var detials structures.Com_item2
+	var detials structures.Complete_payment_item
 	err := json.NewDecoder(r.Body).Decode(&detials)
 	if err != nil {
 		var err structures.Error

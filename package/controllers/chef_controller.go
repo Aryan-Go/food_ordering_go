@@ -21,7 +21,7 @@ func ChefHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func CompleteOrder(w http.ResponseWriter, r *http.Request) {
-	var order_id structures.Com_item
+	var order_id structures.Complete_item
 	err := json.NewDecoder(r.Body).Decode(&order_id)
 	if err != nil {
 		var err structures.Error
