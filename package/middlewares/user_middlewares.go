@@ -109,6 +109,10 @@ func VerifyToken(next http.Handler) http.Handler {
 
 func JWTAuthMiddlewareCustomer(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == http.MethodOptions {
+			w.WriteHeader(http.StatusOK)
+			return
+		}
 		authHeader := strings.Split(r.Header.Get("Authorization"), "Bearer ")
 		if len(authHeader) != 2 {
 			fmt.Println("Malformed token cus")
@@ -136,6 +140,12 @@ func JWTAuthMiddlewareCustomer(next http.Handler) http.Handler {
 				err.Message = "This is a protected route where only customer is allowed"
 				json.NewEncoder(w).Encode(err)
 				return
+			}else if(!ok){
+				var err structures.Error
+				err.Code = http.StatusBadRequest
+				err.Message = "Some error in jwt"
+				json.NewEncoder(w).Encode(err)
+				return
 			}
 			ctx := context.WithValue(r.Context(), "props", claims)
 			next.ServeHTTP(w, r.WithContext(ctx))
@@ -151,6 +161,10 @@ func JWTAuthMiddlewareCustomer(next http.Handler) http.Handler {
 
 func JWTAuthMiddlewareChef(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == http.MethodOptions {
+			w.WriteHeader(http.StatusOK)
+			return
+		}
 		authHeader := strings.Split(r.Header.Get("Authorization"), "Bearer ")
 		if len(authHeader) != 2 {
 			fmt.Println("Malformed token chef")
@@ -190,6 +204,10 @@ func JWTAuthMiddlewareChef(next http.Handler) http.Handler {
 
 func JWTAuthMiddlewareAdmin(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == http.MethodOptions {
+			w.WriteHeader(http.StatusOK)
+			return
+		}
 		authHeader := strings.Split(r.Header.Get("Authorization"), "Bearer ")
 		if len(authHeader) != 2 {
 			fmt.Println("Malformed token adm")
@@ -231,5 +249,24 @@ func JWTAuthMiddlewareAdmin(next http.Handler) http.Handler {
 		err2.Code = http.StatusUnauthorized
 		err2.Message = "Unauthorized"
 		json.NewEncoder(w).Encode(err2)
+	})
+}
+func CorsMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		origin := r.Header.Get("Origin")
+		if origin != "" {
+			w.Header().Set("Access-Control-Allow-Origin", origin)
+			w.Header().Set("Access-Control-Allow-Credentials", "true")
+		}
+
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+
+		if r.Method == http.MethodOptions {
+			w.WriteHeader(http.StatusOK)
+			return
+		}
+
+		next.ServeHTTP(w, r)
 	})
 }

@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github/aryan-go/food_ordering_go/package/middlewares"
 	"github/aryan-go/food_ordering_go/package/models"
 	"github/aryan-go/food_ordering_go/package/routes"
 	"log"
@@ -19,9 +20,9 @@ func main() {
 	}
 
 	server := routes.All_routes()
-
+	serverWithCors := middlewares.CorsMiddleware(server)
 	srv := &http.Server{
-		Handler:      server,
+		Handler:      serverWithCors,
 		Addr:         "127.0.0.1:8000",
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,

@@ -139,7 +139,6 @@ func GetUsersData(w http.ResponseWriter, r *http.Request) {
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	var loginUser structures.Login
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
 	err := json.NewDecoder(r.Body).Decode(&loginUser)
 	if err != nil {
 		var errorAPi = structures.Error{
