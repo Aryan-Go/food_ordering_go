@@ -33,7 +33,11 @@ useEffect(() => {
     const IncompleteOrder = (order_id) => {
       console.log(order_id)
     navigate(`/waiting_page?order_id=${order_id}`);
-  };
+};
+const IncompletePayment = (payment_id) => {
+        navigate(`/payment_admin?payment_id=${payment_id}`);
+
+    }
   console.log(data);
   const CustomerToChef = async (id) => {
     const data_sent = {
@@ -178,7 +182,7 @@ useEffect(() => {
                     <br />
                     <br />
                     <button
-                      onClick={() => IncompleteOrder(Number(select_payment_id))}
+                      onClick={() => IncompletePayment(Number(select_payment_id))}
                       type="button"
                       className="text-center text-4xl font-bold w-max bg-[#F4D871] px-[2rem] py-[0.5rem] mb-30"
                     >

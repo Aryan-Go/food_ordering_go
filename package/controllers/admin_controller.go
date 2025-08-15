@@ -33,6 +33,44 @@ func PaymentHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	total_payment := models.FindTotalPayment(detials.Order_id, models.FindCustomerId(email))
+	if(total_payment == 0){
+		var err structures.Error
+		err.Code = http.StatusBadRequest
+		err.Message = "There is no payment details. Either this is not the related customer or order id is wrong"
+		json.NewEncoder(w).Encode(err)
+		fmt.Println(err)
+		return
+	}
+	final_payment := total_payment + ((total_payment * float64(detials.Tip)) / float64(100))
+	var pay_details structures.Payment_details
+	pay_details.Final_payment = final_payment
+	pay_details.Tip = detials.Tip
+	json.NewEncoder(w).Encode(pay_details)
+}
+
+func CompletePayment(w http.ResponseWriter, r *http.Request){
+	props := r.Context().Value("props")
+	if props == nil {
+		http.Error(w, "No claims found in context", http.StatusUnauthorized)
+		return
+	}
+	claims, ok := props.(jwt.MapClaims)
+	if !ok {
+		http.Error(w, "Invalid claims type", http.StatusInternalServerError)
+		return
+	}
+	email := claims["email"].(string)
+	var detials structures.Complete_payment_item
+	err := json.NewDecoder(r.Body).Decode(&detials)
+	if err != nil {
+		var err structures.Error
+		err.Code = http.StatusBadRequest
+		err.Message = "There is some error in getting data from the user"
+		json.NewEncoder(w).Encode(err)
+		fmt.Println(err)
+		return
+	}
+	total_payment := models.FindTotalPayment(detials.Order_id, models.FindCustomerId(email))
 	final_payment := total_payment + ((total_payment * float64(detials.Tip)) / float64(100))
 	var pay_details structures.Payment_details
 	pay_details.Final_payment = final_payment
@@ -92,11 +130,11 @@ func AdminCompletePaymemt(w http.ResponseWriter, r *http.Request) {
 	for _, value := range details.Payment_id {
 		if info.Id == value {
 			models.UpdatePaymentId(value)
-			var succ = structures.Error{
-				Code:    http.StatusAccepted,
-				Message: "The customer has done the payment successfully",
-			}
-			json.NewEncoder(w).Encode(succ)
+			total_payment,order_id := models.GetPaymentId(value)
+			var details structures.Payment_details_admin
+			details.Final_payment = total_payment
+			details.Order_id = order_id
+			json.NewEncoder(w).Encode(details)
 			return
 
 		}

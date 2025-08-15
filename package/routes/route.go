@@ -26,7 +26,8 @@ func All_routes() *mux.Router {
 	customer.HandleFunc("/menu_show", controllers.MenuHandler).Methods("GET")
 	customer.HandleFunc("/cus_chef", controllers.CustomerChefConverter).Methods("POST", "OPTIONS")
 	customer.HandleFunc("/render_waiting", controllers.GetOrderedItems).Methods("POST")
-	customer.HandleFunc("/render_payment", controllers.PaymentHandler).Methods("GET")
+	customer.HandleFunc("/render_payment", controllers.PaymentHandler).Methods("POST", "OPTIONS")
+	customer.HandleFunc("/complete_payment", controllers.CompletePayment).Methods("POST", "OPTIONS")
 	customer.HandleFunc("/food_items_added", controllers.FoodItemsAdded).Methods("POST", "OPTIONS")
 
 	chef := r.PathPrefix("/chef").Subrouter()

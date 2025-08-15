@@ -4,6 +4,7 @@ import { toast, Bounce } from "react-toastify";
 import Navbar from "../components/Navbar_chef.jsx";
 
 const Order = () => {
+    let counter = 0;
   const [data, set_data] = useState(null);
   useEffect(() => {
     set_data(null);
@@ -12,7 +13,7 @@ const Order = () => {
       set_data(resp.data);
     };
     get_data();
-  }, []);
+  }, [counter]);
   console.log("This the result I am getting");
 
   if (data == null || data == undefined) {
@@ -98,7 +99,8 @@ const Order = () => {
             food_id: food_id,
             order_id: order_id,
           };
-          await axios.post("/chef/complete_order", data_sent);
+            await axios.post("/chef/complete_order", data_sent);
+            counter++;
         };
       return (
         <>

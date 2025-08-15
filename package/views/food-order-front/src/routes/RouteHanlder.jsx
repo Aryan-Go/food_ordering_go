@@ -8,6 +8,8 @@ import Menu from "../pages/Menu.jsx"
 import Waiting from "../pages/Waiting.jsx"
 import Order from "../pages/Order.jsx"
 import Admin from "../pages/Admin.jsx"
+import Payment from "../pages/Payment.jsx"
+import Payment_admin from "../pages/Payment_admin.jsx"
 
 const RouteHanlder = () => {
   return (
@@ -21,6 +23,8 @@ const RouteHanlder = () => {
       <Route path="/waiting_page" element={<Waiting />} />
       <Route path="/order" element={<Order />} />
       <Route path="/admin" element={<Admin />} />
+      <Route path="/payment" element={<Payment />} />
+      <Route path="/payment_admin" element={<Payment_admin />} />
     </Routes>
   );
     

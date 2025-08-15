@@ -103,6 +103,24 @@ func UnpaidPaymentId() []int {
 	return ids
 }
 
+func GetPaymentId(payment_id int) (float64,int) {
+	query := "SELECT * FROM payment_table WHERE payment_id = ?"
+	var details structures.Payment_table
+	result, err := DB.Query(query, payment_id)
+	if err != nil {
+		log.Fatal("There is some error in getting the required details")
+	} else {
+		for result.Next() {
+			err := result.Scan(&details.Total_price, &details.Tip, &details.Payment_status, &details.Order_id, &details.Customer_id, &details.Payment_id)
+			if err != nil {
+				log.Fatal("There is some error in scanning details for payment : ", err)
+			}
+		}
+	}
+	defer result.Close()
+	return details.Total_price,details.Order_id
+}
+
 func UpdatePaymentTable(order_id int, customer_id int) {
 	payment_status_2 := "completed"
 	payment_status_1 := "left"

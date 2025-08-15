@@ -12,6 +12,11 @@ type Payment_details struct {
 	Tip           int
 }
 
+type Payment_details_admin struct {
+	Final_payment float64
+	Order_id           int
+}
+
 type Payment_table struct {
 	Total_price    float64    `json:"total_price"`
 	Tip            null.Float `json:"tip"`
