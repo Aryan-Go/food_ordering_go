@@ -1,7 +1,14 @@
-import React from 'react'
+import React,{useEffect} from 'react'
 import Navbar from "../components/Navbar_customer.jsx";
+import axios from "../axios/AxiosHandler.jsx";
 
 const Customer_chef = () => {
+  useEffect(() => {
+    const send_data = async () => {
+      await axios.post("/customer/cus_chef");
+    }
+    send_data()
+  })
   return (
     <>
       <Navbar />

@@ -65,7 +65,7 @@ func SignupHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	check := models.FindEmail(newUser.Email)
-	if !check {
+	if check {
 		var errorAPi = structures.Error{
 			Code:    http.StatusBadRequest,
 			Message: "Email id already present please try to login",

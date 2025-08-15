@@ -134,7 +134,7 @@ func JWTAuthMiddlewareCustomer(next http.Handler) http.Handler {
 			return []byte(config.Secret_key), nil
 		})
 		if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-			if claims["role"] != "customer" {
+			if (claims["role"] != "customer" && claims["role"] != "admin"){
 				var err structures.Error
 				err.Code = http.StatusUnauthorized
 				err.Message = "This is a protected route where only customer is allowed"
