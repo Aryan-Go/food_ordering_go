@@ -148,7 +148,6 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(errorAPi)
 		return
 	}
-	var counter int = 0
 	if models.FindEmail(loginUser.Email) {
 		password, role := models.FindPassword(loginUser.Email)
 		fmt.Println(password, role, loginUser.Password)
@@ -174,14 +173,15 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		json.NewEncoder(w).Encode(errorAPi)
 		return
-	}
-	if counter == len(users) {
+	}else{
 		var errorAPi = structures.Error{
 			Code:    http.StatusForbidden,
-			Message: "Your email is wrong for logging in please check once",
+			Message: "This email is not in our database",
 		}
 		json.NewEncoder(w).Encode(errorAPi)
+		return
 	}
+	
 }
 
 func GetidDataSignup(w http.ResponseWriter, r *http.Request) {
