@@ -149,7 +149,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	var counter int = 0
-	if !models.FindEmail(loginUser.Email) {
+	if models.FindEmail(loginUser.Email) {
 		password, role := models.FindPassword(loginUser.Email)
 		fmt.Println(password, role, loginUser.Password)
 		err = bcrypt.CompareHashAndPassword([]byte(password), []byte(loginUser.Password))

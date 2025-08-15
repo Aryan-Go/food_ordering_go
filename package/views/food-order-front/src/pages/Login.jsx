@@ -4,8 +4,8 @@ import {toast,Bounce} from "react-toastify"
 import { useNavigate } from "react-router-dom"
 
 const Login = () => {
-    const [email,SetEmail] = useState("")
-    const [password,SetPassword] = useState("")
+    const [email,SetEmail] = useState()
+    const [password,SetPassword] = useState()
     const navigate = useNavigate()
     const clickHandler = async(email,passsword) => {
         const data = {
@@ -14,48 +14,45 @@ const Login = () => {
         };
         const response = await axios.post("/login", data)
         console.log(response.data)
-        if (response.data.status_code == 400) {
-            toast.error(response.data.message, {
-                position: "top-center",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: false,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "dark",
-                transition: Bounce,
-            })
-        }
-        else {
-            toast.success("You are logged in", {
-                position: "top-center",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: false,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "dark",
-                transition: Bounce,
-            })
-            const data = {
-                email: email,
-                password : password
-            }
-            const result = await axios.post("/login", data)
-            localStorage.setItem("token", result.data.message);
-            const response2 = await axios.post("/user/auth_redirect")
-            console.log(response2.data.message)
-            if (response2.data.message == "Welcome chef") {
-                navigate("/chef")
-            }
-            else if (response2.data.message == "Welcome admin") {
-                navigate("/admin")
-            }
-            else{
-                navigate("/customer")
-            }
+        if (response.data.status_code == 403) {
+          toast.error(response.data.message, {
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: false,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+            transition: Bounce,
+          });
+        } else {
+          toast.success("You are logged in", {
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: false,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+            transition: Bounce,
+          });
+          const data = {
+            email: email,
+            password: password,
+          };
+          const result = await axios.post("/login", data);
+          localStorage.setItem("token", result.data.message);
+          const response2 = await axios.post("/user/auth_redirect");
+          console.log(response2.data.message);
+          if (response2.data.message == "Welcome chef") {
+            navigate("/chef");
+          } else if (response2.data.message == "Welcome admin") {
+            navigate("/admin");
+          } else {
+            navigate("/customer");
+          }
         }
     }
   return (

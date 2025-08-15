@@ -66,7 +66,7 @@ func FindEmail(email string) bool {
 		defer result.Close()
 		return false
 	} else {
-		if !result.Next() {
+		if result.Next() {
 			defer result.Close()
 			return true
 		} else {
