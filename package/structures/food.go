@@ -41,6 +41,6 @@ type Food_added struct {
 	Quant        int    `json:"quant"`
 	Instruct     string `json:"instructions"`
 	Food_status  string `json:"status"`
-	Order_status int    `json:"order_id"`
+	Order_id int    `json:"order_id"`
 	Food_name    string `json:"food_name"`
 }

@@ -147,9 +147,10 @@ func GetOrders(order_id int) []structures.Food_added {
 		defer result.Close()
 	} else {
 		for result.Next() {
-			var food_item structures.Food_added
+			var food_item structures.Food_added_order
 			err := result.Scan(&food_item.Id, &food_item.Quant, &food_item.Instruct, &food_item.Order_status, &food_item.Food_status)
 			food_item.Food_name = GetFoodName(food_item.Id)
+			food_item.Order_id = order_id
 			if err != nil {
 				fmt.Println(err.Error())
 				continue

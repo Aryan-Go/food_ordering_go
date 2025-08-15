@@ -33,7 +33,7 @@ func All_routes() *mux.Router {
 	chef.Use(middlewares.CorsMiddleware)
 	chef.Use(middlewares.JWTAuthMiddlewareChef)
 	chef.HandleFunc("", controllers.ChefHandler).Methods("GET")
-	chef.HandleFunc("/render_order", controllers.GetOrderedItems).Methods("GET")
+	chef.HandleFunc("/render_order", controllers.GetChefOrderedItems).Methods("GET")
 	chef.HandleFunc("/complete_order", controllers.CompleteOrder).Methods("POST", "OPTIONS")
 
 	admin := r.PathPrefix("/admin").Subrouter()

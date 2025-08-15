@@ -6,6 +6,7 @@ import Chef from "../pages/Chef.jsx"
 import Customer_chef from "../pages/Customer_chef.jsx"
 import Menu from "../pages/Menu.jsx"
 import Waiting from "../pages/Waiting.jsx"
+import Order from "../pages/Order.jsx"
 
 const RouteHanlder = () => {
   return (
@@ -17,6 +18,7 @@ const RouteHanlder = () => {
       <Route path="/customer_chef" element={<Customer_chef />} />
       <Route path="/menu" element={<Menu />} />
       <Route path="/waiting_page" element={<Waiting />} />
+      <Route path="/order" element={<Order />} />
     </Routes>
   );
     

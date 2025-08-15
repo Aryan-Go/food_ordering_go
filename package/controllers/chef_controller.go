@@ -8,6 +8,8 @@ import (
 
 	// "log"
 	"net/http"
+
+	"github.com/golang-jwt/jwt/v5"
 	// "strconv"
 	// "mux"
 	// "golang.org/x/crypto/bcrypt"
@@ -56,4 +58,39 @@ func CompleteOrder(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(succ)
 		return
 	}
+}
+
+func GetChefOrderedItems(w http.ResponseWriter, r *http.Request) {
+	props := r.Context().Value("props")
+	claims, ok := props.(jwt.MapClaims)
+	if !ok {
+		http.Error(w, "Invalid claims type", http.StatusInternalServerError)
+		return
+	}
+	email := claims["email"].(string)
+	fmt.Println(email)
+	role := claims["role"].(string)
+	if(role != "chef"){
+		var err2 structures.Error
+		err2.Code = http.StatusBadRequest
+		err2.Message = "Please login as chef"
+		json.NewEncoder(w).Encode(err2)
+		return
+	}
+	chef_id := models.FindChefId(email)
+	fmt.Println(chef_id)
+	incomp_order_id := models.FindChefOrders(chef_id)
+	var food_slices []structures.Food_added
+	for _,value := range incomp_order_id {
+		fmt.Println(value)
+		food_slices = append(food_slices,models.GetOrders(value)...)
+	}
+	if len(food_slices) == 0 {
+		var err2 structures.Error
+		err2.Code = http.StatusBadRequest
+		err2.Message = "No items to be made"
+		json.NewEncoder(w).Encode(err2)
+		return
+	}
+	json.NewEncoder(w).Encode(food_slices)
 }

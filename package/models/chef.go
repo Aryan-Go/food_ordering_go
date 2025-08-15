@@ -43,7 +43,7 @@ func CompleteOrder(order_id int) bool {
 		for result.Next() {
 			fmt.Println("I am in")
 			counter1++
-			err := result.Scan(&food_item.Id, &food_item.Quant, &food_item.Instruct, &food_item.Order_status, &food_item.Food_status)
+			err := result.Scan(&food_item.Id, &food_item.Quant, &food_item.Instruct, &food_item.Order_id, &food_item.Food_status)
 			if err != nil {
 				log.Fatal("There is some error in scaiing for values for added food items")
 				defer result.Close()
@@ -71,4 +71,52 @@ func CompleteOrder(order_id int) bool {
 	}
 	defer result.Close()
 	return true
+}
+
+func FindChefId(email string) int {
+	fmt.Println("Find customer id")
+	role := "chef"
+	query := "SELECT * FROM user WHERE role = ? AND email = ?"
+	result, err := DB.Query(query, role, email)
+	var user structures.Get_user
+	if err != nil {
+		log.Fatal("There is some error in finding a customer : ", err)
+		defer result.Close()
+		return -1
+	} else {
+		if !result.Next() {
+			defer result.Close()
+			return -1
+		} else {
+			if err := result.Scan(&user.Id, &user.Email, &user.Name, &user.Password, &user.Role); err != nil {
+				defer result.Close()
+				log.Fatal(err)
+			}
+		}
+	}
+	defer result.Close()
+	return user.Id
+}
+
+func FindChefOrders(id int)[]int{
+	fmt.Println("Find chef orders")
+	status := "left"
+	query := "SELECT * FROM order_table WHERE chef_id = ? AND food_status = ?"
+	result, err := DB.Query(query, id, status)
+	var ids []int
+	var orderdetails structures.Order
+	if err != nil {
+		log.Fatal("There is some error in getting the required details")
+	} else {
+		for result.Next() {
+			err := result.Scan(&orderdetails.Order_id, &orderdetails.Customer_id, &orderdetails.Food_status, &orderdetails.Chef_id)
+			if err != nil {
+				log.Fatal("There is some error in scanning the details for incomplete order id")
+			} else {
+				ids = append(ids, orderdetails.Order_id)
+			}
+		}
+	}
+	defer result.Close()
+	return ids
 }
