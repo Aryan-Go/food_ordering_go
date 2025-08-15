@@ -65,7 +65,7 @@ const Menu = () => {
             transition: Bounce,
           });
         } else {
-          toast.success(response.data.message, {
+          toast.success("Your order is = " + response.data.message, {
             position: "top-center",
             autoClose: 5000,
             hideProgressBar: false,
@@ -76,7 +76,7 @@ const Menu = () => {
             theme: "dark",
             transition: Bounce,
           });
-          navigate("/waiting_page");
+          navigate(`/waiting_page?order_id=${response.data.message}`);
         }
     }
   const menu_table = data.map((value, key) => {

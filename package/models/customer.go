@@ -136,9 +136,9 @@ func AddOrderedItems(food_id int, quant int, instructions string, order_id int) 
 	}
 }
 
-var food_slice []structures.Food_added
 
 func GetOrders(order_id int) []structures.Food_added {
+	var food_slice  = []structures.Food_added{}
 	food_status := "left"
 	query := `SELECT * FROM ordered_items WHERE order_id = ? AND food_status = ?`
 	result, err := DB.Query(query, order_id, food_status)

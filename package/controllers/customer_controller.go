@@ -7,6 +7,7 @@ import (
 	"github/aryan-go/food_ordering_go/package/models"
 	"github/aryan-go/food_ordering_go/package/structures"
 	"log"
+	"strconv"
 
 	// "log"
 	"net/http"
@@ -102,7 +103,7 @@ func FoodItemsAdded(w http.ResponseWriter, r *http.Request) {
 			models.AddOrderedItems(data_add.Id_arr[key], data_add.Items_added[key], data_add.Special_instructions[key], id2)
 			var succ structures.Error
 			succ.Code = http.StatusAccepted
-			succ.Message = fmt.Sprintf("All the data has been added in the order table and ordered_items table successfully with order id %v with chef id %v", id2, id)
+			succ.Message =  strconv.Itoa(id2)
 			json.NewEncoder(w).Encode(succ)
 			return
 		}
@@ -113,19 +114,20 @@ func GetOrderedItems(w http.ResponseWriter, r *http.Request) {
 	var order_id structures.Order_id
 	err := json.NewDecoder(r.Body).Decode(&order_id)
 	if err != nil {
-		var err structures.Error
-		err.Code = http.StatusBadRequest
-		err.Message = "There is some error in getting the order id"
-		json.NewEncoder(w).Encode(err)
+		var err2 structures.Error
+		err2.Code = http.StatusBadRequest
+		err2.Message = "There is some error in getting the order id"
+		fmt.Println(err)
+		json.NewEncoder(w).Encode(err2)
 		return
 	}
 	fmt.Println(order_id.Id)
 	food_slices := models.GetOrders(order_id.Id)
 	if len(food_slices) == 0 {
-		var err structures.Error
-		err.Code = http.StatusBadRequest
-		err.Message = "The order is completed or not yet made"
-		json.NewEncoder(w).Encode(err)
+		var err2 structures.Error
+		err2.Code = http.StatusBadRequest
+		err2.Message = "The order is completed or not yet made"
+		json.NewEncoder(w).Encode(err2)
 		return
 	}
 	json.NewEncoder(w).Encode(food_slices)
