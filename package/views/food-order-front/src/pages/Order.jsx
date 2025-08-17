@@ -42,7 +42,7 @@ const Order = () => {
               </thead>
             </table>
             <h1 className="text-red-500 text-5xl font-bold">
-              Please login as chef
+              Please login as chef or your order is being fetched
             </h1>
           </div>
         </form>
@@ -66,7 +66,7 @@ const Order = () => {
         <>
           <Navbar />
           <form action="/payment" method="post" className="text-center">
-            <div className="h-[100vh] w-[100vw] bg-[url(waiting_back.webp)] bg-no-repeat bg-size-[length:100%_100%] text-center flex flex-col items-center gap-2rem text-center">
+            <div className="h-[100vh] w-[100vw] bg-[url(menu_back.webp)] bg-no-repeat bg-size-[length:100%_100%] text-center flex flex-col items-center gap-2rem text-center">
               <h1 className="text-[6rem] font-bold">Ordered Items</h1>
               <table className="text-center w-[60vw] m-[4rem] px-[10rem]">
                 <thead>
@@ -110,51 +110,53 @@ const Order = () => {
       return (
         <>
           <Navbar />
-            <div className="h-[100vh] w-[100vw] bg-[url(waiting_back.webp)] bg-no-repeat bg-size-[length:100%_100%] text-center flex flex-col items-center gap-2rem text-center">
-              <h1 className="text-[6rem] font-bold">Ordered Items</h1>
-              <table className="text-center w-[60vw] m-[4rem] px-[10rem]">
-                <thead>
-                  <tr>
-                    <th scope="col" className="text-2xl mx-[2rem]">
-                      Food Items
-                    </th>
-                    <th scope="col" className="text-2xl mx-[2rem]">
-                      Special Instructions
-                    </th>
-                    <th scope="col" className="text-2xl mx-[2rem]">
-                      Quantity Added
-                    </th>
-                    <th scope="col" className="text-2xl mx-[2rem]">
-                      Prepared/left
-                    </th>
+          <div className="h-[100vh] w-[100vw] bg-[url(menu_back.webp)] bg-no-repeat bg-size-[length:100%_100%] text-center flex flex-col items-center gap-2rem text-center">
+            <h1 className="text-[6rem] font-bold">Ordered Items</h1>
+            <table className="text-center w-[60vw] m-[4rem] px-[10rem]">
+              <thead>
+                <tr>
+                  <th scope="col" className="text-2xl mx-[2rem]">
+                    Food Items
+                  </th>
+                  <th scope="col" className="text-2xl mx-[2rem]">
+                    Special Instructions
+                  </th>
+                  <th scope="col" className="text-2xl mx-[2rem]">
+                    Quantity Added
+                  </th>
+                  <th scope="col" className="text-2xl mx-[2rem]">
+                    Prepared/left
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {data.map((value, key) => (
+                  <tr key={key}>
+                    <td className="text-xl font-bold mx-[2rem]">
+                      {value.food_name}
+                    </td>
+                    <td className="text-xl font-semibold mx-[2rem]">
+                      {value.instructions}
+                    </td>
+                    <td className="text-xl font-bold mx-[2rem]">
+                      {value.quant}
+                    </td>
+                    <td className="text-xl font-bold mx-[2rem]">
+                      <button
+                        type="button"
+                        className="text-white bg-blue-400 p-[1rem] rounded-2xl"
+                        onClick={() =>
+                          clickHanlder(value.order_id, value.food_id)
+                        }
+                      >
+                        Mark as Completed
+                      </button>
+                    </td>
                   </tr>
-                </thead>
-                <tbody>
-                  {data.map((value, key) => (
-                    <tr key={key}>
-                      <td className="text-xl font-bold mx-[2rem]">
-                        {value.food_name}
-                      </td>
-                      <td className="text-xl font-semibold mx-[2rem]">
-                        {value.instructions}
-                      </td>
-                      <td className="text-xl font-bold mx-[2rem]">
-                        {value.quant}
-                      </td>
-                      <td className="text-xl font-bold mx-[2rem]">
-                              <button
-                                  type="button"
-                                  className="text-white bg-blue-400 p-[1rem] rounded-2xl"
-                          onClick={() => clickHanlder(value.order_id , value.food_id)}
-                        >
-                          Mark as Completed
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </>
       );
     }
