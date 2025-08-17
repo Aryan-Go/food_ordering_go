@@ -30,8 +30,8 @@ func InitDatabase() (*sql.DB, error) {
 		if err != nil {
 			return nil, fmt.Errorf("error opening database: %v", err)
 		} else {
-			DB.SetMaxOpenConns(50)
-			DB.SetMaxIdleConns(10)
+			DB.SetMaxOpenConns(100)
+			DB.SetMaxIdleConns(50)
 			DB.SetConnMaxLifetime(5 * time.Minute)
 			err = DB.Ping()
 			if err != nil {

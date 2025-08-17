@@ -73,7 +73,8 @@ func FoodItemsAdded(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(err)
 		return
 	}
-	id := models.FindFreeChef()
+	// id := models.FindFreeChef()
+	id := 2
 	if id == -1 {
 		var err structures.Error
 		err.Code = http.StatusBadRequest
@@ -94,10 +95,11 @@ func FoodItemsAdded(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(err)
 		return
 	}
-	fmt.Printf("%v %v", email, models.FindCustomerId(email))
-	id2 := models.AddOrderTable(models.FindCustomerId(email), "left", id)
+	custom_id := models.FindCustomerId(email)
+	fmt.Printf("%v %v", email, custom_id)
+	id2 := models.AddOrderTable(custom_id, "left", id)
 	total_payment := models.FindPayment(data_add.Items_added, data_add.Id_arr)
-	models.AddPaymentDetails(total_payment, id2, models.FindCustomerId(email))
+	models.AddPaymentDetails(total_payment, id2, custom_id)
 	for key, value := range data_add.Items_added {
 		if value != 0 {
 			models.AddOrderedItems(data_add.Id_arr[key], data_add.Items_added[key], data_add.Special_instructions[key], id2)

@@ -9,7 +9,7 @@ import (
 func AddPaymentDetails(price float64, order_id int, customer_id int) {
 	payment_status := "left"
 	query := "INSERT INTO payment_table (total_price,payment_status,order_id,customer_id) VALUES (?,?,?,?)"
-	_, err := DB.Query(query, price, payment_status, order_id, customer_id)
+	_, err := DB.Exec(query, price, payment_status, order_id, customer_id)
 	if err != nil {
 		log.Fatal("Some err in adding details in payment table : ", err)
 	} else {
