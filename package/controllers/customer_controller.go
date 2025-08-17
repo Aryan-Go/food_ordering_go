@@ -47,9 +47,9 @@ func MenuHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(food_data)
 }
 
-var data_add structures.Items_added
 
 func FoodItemsAdded(w http.ResponseWriter, r *http.Request) {
+	var data_add structures.Items_added
 	props := r.Context().Value("props")
 	if props == nil {
 		http.Error(w, "No claims found in context", http.StatusUnauthorized)
@@ -62,6 +62,9 @@ func FoodItemsAdded(w http.ResponseWriter, r *http.Request) {
 	}
 	email := claims["email"].(string)
 	err := json.NewDecoder(r.Body).Decode(&data_add)
+	for key,value := range data_add.Id_arr{
+		fmt.Printf("%v %v %v" , data_add.Id_arr[key] , data_add.Items_added[key] , data_add.Special_instructions[key])
+	}
 	if err != nil {
 		log.Fatal("There is some error in unmarshaling the added items data", err)
 		return
@@ -101,13 +104,12 @@ func FoodItemsAdded(w http.ResponseWriter, r *http.Request) {
 	for key, value := range data_add.Items_added {
 		if value != 0 {
 			models.AddOrderedItems(data_add.Id_arr[key], data_add.Items_added[key], data_add.Special_instructions[key], id2)
-			var succ structures.Error
-			succ.Code = http.StatusAccepted
-			succ.Message =  strconv.Itoa(id2)
-			json.NewEncoder(w).Encode(succ)
-			return
 		}
 	}
+	var succ structures.Error
+	succ.Code = http.StatusAccepted
+	succ.Message =  strconv.Itoa(id2)
+	json.NewEncoder(w).Encode(succ)
 }
 
 func GetOrderedItems(w http.ResponseWriter, r *http.Request) {

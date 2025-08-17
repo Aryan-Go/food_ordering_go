@@ -13,7 +13,7 @@ const Order = () => {
       set_data(resp.data);
     };
     get_data();
-  }, [counter]);
+  }, []);
   console.log("This the result I am getting");
 
   if (data == null || data == undefined) {
@@ -101,6 +101,11 @@ const Order = () => {
           };
             await axios.post("/chef/complete_order", data_sent);
             counter++;
+            const get_data = async () => {
+              const resp = await axios.get("/chef/render_order");
+              set_data(resp.data);
+            };
+            get_data();
         };
       return (
         <>

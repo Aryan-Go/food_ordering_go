@@ -84,6 +84,7 @@ const IncompletePayment = (payment_id) => {
     );
   } else {
       if (data.status_code) {
+          navigate(-1)
            toast.error(data.message, {
              position: "top-center",
              autoClose: 5000,
@@ -95,13 +96,13 @@ const IncompletePayment = (payment_id) => {
              theme: "dark",
              transition: Bounce,
            });
-           return (
-           <>
-             <div className="h-[100vh]">
-               <h1 className="py-[1rem] text-[8rem] font-bold text-red-500">You are not allowed</h1>
-             </div>
-           </>
-         );
+        //    return (
+        //    <>
+        //      <div className="h-[100vh]">
+        //        <h1 className="py-[1rem] text-[8rem] font-bold text-red-500">You are not allowed</h1>
+        //      </div>
+        //    </>
+        //  );
       }
       else {
           return (

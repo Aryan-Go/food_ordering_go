@@ -128,7 +128,7 @@ func AddOrderedItems(food_id int, quant int, instructions string, order_id int) 
 	fmt.Println("Add ordered items")
 	food_status := "left"
 	query := "INSERT INTO ordered_items VALUES (?,?,?,?,?)"
-	_, err := DB.Query(query, food_id, quant, instructions, order_id, food_status)
+	_, err := DB.Exec(query, food_id, quant, instructions, order_id, food_status)
 	if err != nil {
 		log.Fatal("There is some error in adding data inside the ordered items table : ", err)
 	} else {
