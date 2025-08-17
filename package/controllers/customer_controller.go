@@ -62,9 +62,6 @@ func FoodItemsAdded(w http.ResponseWriter, r *http.Request) {
 	}
 	email := claims["email"].(string)
 	err := json.NewDecoder(r.Body).Decode(&data_add)
-	for key,value := range data_add.Id_arr{
-		fmt.Printf("%v %v %v" , data_add.Id_arr[key] , data_add.Items_added[key] , data_add.Special_instructions[key])
-	}
 	if err != nil {
 		log.Fatal("There is some error in unmarshaling the added items data", err)
 		return
