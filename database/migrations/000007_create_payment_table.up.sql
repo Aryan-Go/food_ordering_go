@@ -1,3 +1,4 @@
+use food_go
 CREATE TABLE payment_table(
 	total_price DECIMAL,
     tip DECIMAL,

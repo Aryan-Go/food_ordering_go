@@ -3,12 +3,13 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
-	"github/aryan-go/food_ordering_go/package/middlewares"
-	"github/aryan-go/food_ordering_go/package/models"
-	"github/aryan-go/food_ordering_go/package/structures"
 	"log"
 	"net/http"
 	"strconv"
+
+	"github/aryan-go/food_ordering_go/package/middlewares"
+	"github/aryan-go/food_ordering_go/package/models"
+	"github/aryan-go/food_ordering_go/package/structures"
 
 	// "mux"
 	"github.com/golang-jwt/jwt/v5"
@@ -173,7 +174,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		json.NewEncoder(w).Encode(errorAPi)
 		return
-	}else{
+	} else {
 		var errorAPi = structures.Error{
 			Code:    http.StatusForbidden,
 			Message: "This email is not in our database",
@@ -181,7 +182,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(errorAPi)
 		return
 	}
-	
+
 }
 
 func GetidDataSignup(w http.ResponseWriter, r *http.Request) {

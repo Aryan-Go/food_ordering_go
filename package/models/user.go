@@ -1,8 +1,9 @@
 package models
 
 import (
-	"github/aryan-go/food_ordering_go/package/structures"
 	"log"
+
+	"github/aryan-go/food_ordering_go/package/structures"
 )
 
 // ? Here we will create functions to crud datatabase for the user

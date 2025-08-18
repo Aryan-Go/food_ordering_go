@@ -3,9 +3,10 @@ package models
 import (
 	"database/sql"
 	"fmt"
-	backend "github/aryan-go/food_ordering_go"
 	"log"
 	"time"
+
+	backend "github/aryan-go/food_ordering_go"
 
 	_ "github.com/go-sql-driver/mysql"
 )

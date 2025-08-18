@@ -4,10 +4,11 @@ import (
 	// "encoding/json"
 	"encoding/json"
 	"fmt"
-	"github/aryan-go/food_ordering_go/package/models"
-	"github/aryan-go/food_ordering_go/package/structures"
 	"log"
 	"strconv"
+
+	"github/aryan-go/food_ordering_go/package/models"
+	"github/aryan-go/food_ordering_go/package/structures"
 
 	// "log"
 	"net/http"
@@ -46,7 +47,6 @@ func MenuHandler(w http.ResponseWriter, r *http.Request) {
 	food_data := models.GetMenu()
 	json.NewEncoder(w).Encode(food_data)
 }
-
 
 func FoodItemsAdded(w http.ResponseWriter, r *http.Request) {
 	var data_add structures.Items_added
@@ -107,7 +107,7 @@ func FoodItemsAdded(w http.ResponseWriter, r *http.Request) {
 	}
 	var succ structures.Error
 	succ.Code = http.StatusAccepted
-	succ.Message =  strconv.Itoa(id2)
+	succ.Message = strconv.Itoa(id2)
 	json.NewEncoder(w).Encode(succ)
 }
 

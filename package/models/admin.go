@@ -2,8 +2,9 @@ package models
 
 import (
 	"fmt"
-	"github/aryan-go/food_ordering_go/package/structures"
 	"log"
+
+	"github/aryan-go/food_ordering_go/package/structures"
 )
 
 func AddPaymentDetails(price float64, order_id int, customer_id int) {
@@ -103,7 +104,7 @@ func UnpaidPaymentId() []int {
 	return ids
 }
 
-func GetPaymentId(payment_id int) (float64,int) {
+func GetPaymentId(payment_id int) (float64, int) {
 	query := "SELECT * FROM payment_table WHERE payment_id = ?"
 	var details structures.Payment_table
 	result, err := DB.Query(query, payment_id)
@@ -118,7 +119,7 @@ func GetPaymentId(payment_id int) (float64,int) {
 		}
 	}
 	defer result.Close()
-	return details.Total_price,details.Order_id
+	return details.Total_price, details.Order_id
 }
 
 func UpdatePaymentTable(order_id int, customer_id int) {
@@ -137,7 +138,7 @@ func UpdatePaymentId(payment_id int) {
 	payment_status_2 := "completed"
 	payment_status_1 := "left"
 	query := "UPDATE payment_table SET payment_status = ? WHERE payment_id = ? AND payment_status = ?"
-	_, err := DB.Exec(query, payment_status_2, payment_id,payment_status_1)
+	_, err := DB.Exec(query, payment_status_2, payment_id, payment_status_1)
 	if err != nil {
 		log.Fatal("There is some error in completing the payment : ", err)
 	} else {

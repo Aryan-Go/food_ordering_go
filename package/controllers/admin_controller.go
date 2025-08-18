@@ -3,9 +3,10 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
+	"net/http"
+
 	"github/aryan-go/food_ordering_go/package/models"
 	"github/aryan-go/food_ordering_go/package/structures"
-	"net/http"
 
 	"github.com/golang-jwt/jwt/v5"
 )
@@ -33,7 +34,7 @@ func PaymentHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	total_payment := models.FindTotalPayment(detials.Order_id, models.FindCustomerId(email))
-	if(total_payment == 0){
+	if total_payment == 0 {
 		var err structures.Error
 		err.Code = http.StatusBadRequest
 		err.Message = "There is no payment details. Either this is not the related customer or order id is wrong"
@@ -48,7 +49,7 @@ func PaymentHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(pay_details)
 }
 
-func CompletePayment(w http.ResponseWriter, r *http.Request){
+func CompletePayment(w http.ResponseWriter, r *http.Request) {
 	props := r.Context().Value("props")
 	if props == nil {
 		http.Error(w, "No claims found in context", http.StatusUnauthorized)
@@ -130,7 +131,7 @@ func AdminCompletePaymemt(w http.ResponseWriter, r *http.Request) {
 	for _, value := range details.Payment_id {
 		if info.Id == value {
 			models.UpdatePaymentId(value)
-			total_payment,order_id := models.GetPaymentId(value)
+			total_payment, order_id := models.GetPaymentId(value)
 			var details structures.Payment_details_admin
 			details.Final_payment = total_payment
 			details.Order_id = order_id

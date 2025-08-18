@@ -14,7 +14,7 @@ type Payment_details struct {
 
 type Payment_details_admin struct {
 	Final_payment float64
-	Order_id           int
+	Order_id      int
 }
 
 type Payment_table struct {

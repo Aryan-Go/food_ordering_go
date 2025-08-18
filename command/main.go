@@ -2,12 +2,13 @@ package main
 
 import (
 	"fmt"
-	"github/aryan-go/food_ordering_go/package/middlewares"
-	"github/aryan-go/food_ordering_go/package/models"
-	"github/aryan-go/food_ordering_go/package/routes"
 	"log"
 	"net/http"
 	"time"
+
+	"github/aryan-go/food_ordering_go/package/middlewares"
+	"github/aryan-go/food_ordering_go/package/models"
+	"github/aryan-go/food_ordering_go/package/routes"
 )
 
 // ! This is the main file

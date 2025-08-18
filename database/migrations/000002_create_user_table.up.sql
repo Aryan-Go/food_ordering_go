@@ -1,3 +1,4 @@
+use food_go
 CREATE TABLE user(
     user_id INT PRIMARY KEY AUTO_INCREMENT,
     email VARCHAR(200) NOT NULL ,

@@ -4,14 +4,15 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	backend "github/aryan-go/food_ordering_go"
-	"github/aryan-go/food_ordering_go/package/structures"
 	"log"
 	"net/http"
 	"regexp"
 	"strings"
 	"time"
 	"unicode"
+
+	backend "github/aryan-go/food_ordering_go"
+	"github/aryan-go/food_ordering_go/package/structures"
 
 	"github.com/golang-jwt/jwt/v5"
 )
@@ -134,13 +135,13 @@ func JWTAuthMiddlewareCustomer(next http.Handler) http.Handler {
 			return []byte(config.Secret_key), nil
 		})
 		if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-			if (claims["role"] != "customer" && claims["role"] != "admin"){
+			if claims["role"] != "customer" && claims["role"] != "admin" {
 				var err structures.Error
 				err.Code = http.StatusUnauthorized
 				err.Message = "This is a protected route where only customer is allowed"
 				json.NewEncoder(w).Encode(err)
 				return
-			}else if(!ok){
+			} else if !ok {
 				var err structures.Error
 				err.Code = http.StatusBadRequest
 				err.Message = "Some error in jwt"

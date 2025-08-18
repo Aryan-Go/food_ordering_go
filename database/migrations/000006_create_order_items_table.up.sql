@@ -1,3 +1,4 @@
+use food_go
 CREATE TABLE ordered_items(
 	food_id INT NOT NULL,
     quantity INT NOT NULL,

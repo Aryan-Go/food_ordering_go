@@ -3,6 +3,7 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
+
 	"github/aryan-go/food_ordering_go/package/models"
 	"github/aryan-go/food_ordering_go/package/structures"
 
@@ -70,7 +71,7 @@ func GetChefOrderedItems(w http.ResponseWriter, r *http.Request) {
 	email := claims["email"].(string)
 	fmt.Println(email)
 	role := claims["role"].(string)
-	if(role != "chef"){
+	if role != "chef" {
 		var err2 structures.Error
 		err2.Code = http.StatusBadRequest
 		err2.Message = "Please login as chef"
@@ -81,9 +82,9 @@ func GetChefOrderedItems(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(chef_id)
 	incomp_order_id := models.FindChefOrders(chef_id)
 	var food_slices []structures.Food_added
-	for _,value := range incomp_order_id {
+	for _, value := range incomp_order_id {
 		fmt.Println(value)
-		food_slices = append(food_slices,models.GetOrders(value)...)
+		food_slices = append(food_slices, models.GetOrders(value)...)
 	}
 	if len(food_slices) == 0 {
 		var err2 structures.Error

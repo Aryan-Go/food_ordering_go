@@ -1,12 +1,4 @@
-# hello:
-# 	@echo "Hello"
-
-# test:
-# 	 go test -v ./package/middlewares
-
-# run:
-# 	go run command/main.go
-
+include .env
 GO := go
 GOPATH := $(shell go env GOPATH)
 GOPATH_BIN := $(GOPATH)/bin
@@ -16,14 +8,14 @@ GOIMPORTS := $(GOPATH_BIN)/goimports
 GO_PACKAGES = $(shell go list ./... | grep -v vendor)
 PACKAGE_BASE := github/aryan-go/food_ordering_go
 
-DB_HOST = $(shell grep -A6 "^db:" config.yaml | grep "host:" | head -1 | cut -d'"' -f2)
-DB_PORT = $(shell grep -A6 "^db:" config.yaml | grep "port:" | head -1 | awk '{print $$2}')
-DB_USER = $(shell grep -A6 "^db:" config.yaml | grep "user:" | head -1 | cut -d'"' -f2)
-DB_PASS = $(shell grep -A6 "^db:" config.yaml | grep "password:" | head -1 | cut -d'"' -f2)
-DB_NAME = $(shell grep -A6 "^db:" config.yaml | grep "db_name:" | head -1 | cut -d'"' -f2)
+# DB_HOST = $(shell grep -A6 "^db:" config.yaml | grep "host:" | head -1 | cut -d'"' -f2)
+# DB_PORT = $(shell grep -A6 "^db:" config.yaml | grep "port:" | head -1 | awk '{print $$2}')
+# DB_USER = $(shell grep -A6 "^db:" config.yaml | grep "user:" | head -1 | cut -d'"' -f2)
+# DB_PASS = $(shell grep -A6 "^db:" config.yaml | grep "password:" | head -1 | cut -d'"' -f2)
+# DB_NAME = $(shell grep -A6 "^db:" config.yaml | grep "db_name:" | head -1 | cut -d'"' -f2)
 
-UP_MIGRATION_FILE = database/migrations/000001_init_schema.up.sql
-DOWN_MIGRATION_FILE = database/migrations/000001_init_schema.down.sql
+UP_MIGRATION_FILE = database/migrations/000004_create_food_menu_table.up.sql
+DOWN_MIGRATION_FILE = database/migrations/000001_create_food_go_database.down.sql
 
 .PHONY: help vendor build run dev lint format clean
 
@@ -55,9 +47,8 @@ dev:
 
 install-golangci-lint:
 	@echo "=====> Installing golangci-lint..."
-	@curl -sSfL \
-	 	https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | \
-	 	sh -s -- -b $(GOPATH_BIN) v1.62.2
+	@curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | \
+		sh -s -- -b $(GOPATH_BIN) v1.62.2
 
 lint: install-golangci-lint
 	@$(GO) vet $(GO_PACKAGES)
@@ -93,13 +84,12 @@ install-air:
 
 apply-migration:
 	@echo "Applying migration..."
-	@echo "DB_HOST: $(DB_HOST)"
-	@echo "DB_PORT: $(DB_PORT)"
-	@echo "DB_USER: $(DB_USER)"
-	@echo "DB_PASS: $(DB_PASS)"
-	@echo "DB_NAME: $(DB_NAME)"
-	PGPASSWORD=$(DB_PASS) psql -h $(DB_HOST) -p $(DB_PORT) -U $(DB_USER) -d $(DB_NAME) -f $(UP_MIGRATION_FILE)
+	@echo "DB_HOST: $(db_host)"
+	@echo "DB_PORT: $(db_port)"
+	@echo "DB_USER: $(db_user)"
+	@echo "DB_PASS: $(db_password)"
+	mysql -h $(db_host) -P $(db_port) -u $(db_user) -p$(db_password) < $(UP_MIGRATION_FILE)
 
 rollback-migration:
 	@echo "Rolling back migration..."
-	PGPASSWORD=$(DB_PASS) psql -h $(DB_HOST) -p $(DB_PORT) -U $(DB_USER) -d $(DB_NAME) -f $(DOWN_MIGRATION_FILE)
+	mysql -h $(db_host) -P $(db_port) -u $(db_user) -p$(db_password) $(db_database) < $(DOWN_MIGRATION_FILE)

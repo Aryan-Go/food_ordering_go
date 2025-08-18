@@ -17,7 +17,7 @@ type Complete_item struct {
 
 type Incomplete struct {
 	Order_id_order   []int `json:"incomplete_order"`
-	Payment_id []int `json:"incomplete_payment"`
+	Payment_id       []int `json:"incomplete_payment"`
 	Customer_chef_id []int `json:"chef_customer"`
 }
 
@@ -37,10 +37,10 @@ type Order struct {
 }
 
 type Food_added struct {
-	Id           int    `json:"food_id"`
-	Quant        int    `json:"quant"`
-	Instruct     string `json:"instructions"`
-	Food_status  string `json:"status"`
-	Order_id int    `json:"order_id"`
-	Food_name    string `json:"food_name"`
+	Id          int    `json:"food_id"`
+	Quant       int    `json:"quant"`
+	Instruct    string `json:"instructions"`
+	Food_status string `json:"status"`
+	Order_id    int    `json:"order_id"`
+	Food_name   string `json:"food_name"`
 }

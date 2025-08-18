@@ -3,8 +3,9 @@ package models
 import (
 	"database/sql"
 	"fmt"
-	"github/aryan-go/food_ordering_go/package/structures"
 	"log"
+
+	"github/aryan-go/food_ordering_go/package/structures"
 )
 
 func CompleteOrderItem(order_id int, food_status string, food_id int) bool {
@@ -98,7 +99,7 @@ func FindChefId(email string) int {
 	return user.Id
 }
 
-func FindChefOrders(id int)[]int{
+func FindChefOrders(id int) []int {
 	fmt.Println("Find chef orders")
 	status := "left"
 	query := "SELECT * FROM order_table WHERE chef_id = ? AND food_status = ?"
