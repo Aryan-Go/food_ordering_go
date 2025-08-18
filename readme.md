@@ -30,8 +30,7 @@ $ make test
 
 To run the frontend
 ```
-$ cd package
-$ cd views
+$ cd frontend
 $ cd food-order-front
 $ npm run dev
 ```
