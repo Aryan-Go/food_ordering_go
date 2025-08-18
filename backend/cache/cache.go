@@ -57,4 +57,5 @@ func (c *Cache) Delete(key string) {
 func (c *Cache) Clear() {
 	c.mu.Lock()
 	defer c.mu.Unlock()
-	c.data = make(map[string]CacheItem)}
+	c.data = make(map[string]CacheItem)
+}
