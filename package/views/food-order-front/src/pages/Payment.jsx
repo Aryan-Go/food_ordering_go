@@ -42,8 +42,7 @@ const Payment = () => {
         }
         get_data()
     }, [tip])
-    if (data.status_code == 400) {
-        navigate(-1)
+    if (data.status_code == 401) {
         toast.error(data.message, {
                     position: "top-center",
                     autoClose: 5000,
