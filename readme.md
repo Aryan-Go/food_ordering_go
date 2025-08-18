@@ -23,3 +23,8 @@ To get help for running the makefile do the following
 $ make help
 ```
 
+To run the test on email verification
+```
+$ make test
+```
+
