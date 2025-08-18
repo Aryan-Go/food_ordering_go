@@ -35,4 +35,19 @@ $ cd views
 $ cd food-order-front
 $ npm run dev
 ```
+The link for frontend is
+```
+http://localhost:5173/
+```
 
+The link for backend is
+```
+http://127.0.0.1:8000/
+```
+
+The porsts info is as follows
+```
+frontend = 5173
+backend = 8000
+database = 3306
+```

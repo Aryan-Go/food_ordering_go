@@ -25,7 +25,6 @@ help:
 	@echo "vendor: Downloads the dependencies in the vendor folder"
 	@echo "build: Builds the binary of the server"
 	@echo "run: Runs the binary of the server"
-	@echo "dev: Combines build and run commands"
 	@echo "format: Formats the code using fmt and golangci-lint"
 	@echo "clean: Removes the vendor directory and binary"
 
