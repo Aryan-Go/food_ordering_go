@@ -131,41 +131,55 @@ Percentage of the requests served within a certain time (ms)
 When I run the same for 1000 concurrency and 1000000 requests then the results are as follows
 
 ```
+Benchmarking 127.0.0.1 (be patient)
+Completed 10000 requests
+Completed 20000 requests
+Completed 30000 requests
+Completed 40000 requests
+Completed 50000 requests
+Completed 60000 requests
+Completed 70000 requests
+Completed 80000 requests
+Completed 90000 requests
+Completed 100000 requests
+Finished 100000 requests
+
+
 Server Software:        
 Server Hostname:        127.0.0.1
 Server Port:            8000
 
 Document Path:          /chef/render_order
-Document Length:        99 bytes
+Document Length:        85 bytes
 
 Concurrency Level:      1000
-Time taken for tests:   20.668 seconds
-Complete requests:      15
+Time taken for tests:   3.481 seconds
+Complete requests:      100000
 Failed requests:        0
-Total transferred:      5070 bytes
-HTML transferred:       1485 bytes
-Requests per second:    0.73 [#/sec] (mean)
-Time per request:       1377851.333 [ms] (mean)
-Time per request:       1377.851 [ms] (mean, across all concurrent requests)
-Transfer rate:          0.24 [Kbytes/sec] received
+Total transferred:      32400000 bytes
+HTML transferred:       8500000 bytes
+Requests per second:    28723.91 [#/sec] (mean)
+Time per request:       34.814 [ms] (mean)
+Time per request:       0.035 [ms] (mean, across all concurrent requests)
+Transfer rate:          9088.43 [Kbytes/sec] received
 
 Connection Times (ms)
               min  mean[+/-sd] median   max
-Connect:        0   15   8.6     16      33
-Processing:    24   43   9.0     47      49
-Waiting:        3   41  12.8     46      49
-Total:         25   57  11.5     59      71
+Connect:        0   19  86.8      4    2018
+Processing:     1    5   4.3      4      79
+Waiting:        1    5   4.2      4      79
+Total:          1   23  87.1      8    2083
 
 Percentage of the requests served within a certain time (ms)
-  50%     58
-  66%     60
-  75%     68
-  80%     69
-  90%     70
-  95%     71
-  98%     71
-  99%     71
- 100%     71 (longest request)
+  50%      8
+  66%      9
+  75%      9
+  80%     10
+  90%     38
+  95%     69
+  98%    157
+  99%    339
+ 100%   2083 (longest request)
  ```
 
  
