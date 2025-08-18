@@ -28,3 +28,11 @@ To run the test on email verification
 $ make test
 ```
 
+To run the frontend
+```
+$ cd package
+$ cd views
+$ cd food-order-front
+$ npm run dev
+```
+
