@@ -41,9 +41,6 @@ build:
 run:
 	@${GO} run command/main.go
 
-dev:
-	@$(GOPATH_BIN)/air -c .air.toml
-
 install-goimports:
 	@echo "=====> Installing formatter..."
 	@$(GO) install golang.org/x/tools/cmd/goimports@latest
