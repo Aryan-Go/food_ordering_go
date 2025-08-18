@@ -122,7 +122,6 @@ func GetOrderedItems(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(err2)
 		return
 	}
-	fmt.Println(order_id.Id)
 	food_slices := models.GetOrders(order_id.Id)
 	if len(food_slices) == 0 {
 		var err2 structures.Error

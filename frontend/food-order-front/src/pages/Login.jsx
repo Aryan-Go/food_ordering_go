@@ -13,7 +13,6 @@ const Login = () => {
             password: passsword
         };
         const response = await axios.post("/login", data)
-        console.log(response.data)
         if (response.data.status_code == 403) {
           toast.error(response.data.message, {
             position: "top-center",
@@ -45,7 +44,6 @@ const Login = () => {
           const result = await axios.post("/login", data);
           localStorage.setItem("token", result.data.message);
           const response2 = await axios.post("/user/auth_redirect");
-          console.log(response2.data.message);
           if (response2.data.message == "Welcome chef") {
             navigate("/chef");
           } else if (response2.data.message == "Welcome admin") {

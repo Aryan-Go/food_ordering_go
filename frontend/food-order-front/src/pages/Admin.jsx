@@ -31,14 +31,12 @@ useEffect(() => {
   get_data_2();
 }, [data]);
     const IncompleteOrder = (order_id) => {
-      console.log(order_id)
     navigate(`/waiting_page?order_id=${order_id}`);
 };
 const IncompletePayment = (payment_id) => {
         navigate(`/payment_admin?payment_id=${payment_id}`);
 
     }
-  console.log(data);
   const CustomerToChef = async (id) => {
     const data_sent = {
       id: id,
@@ -135,7 +133,6 @@ const IncompletePayment = (payment_id) => {
                       className="text-[2rem] w-max"
                     >
                       {data.incomplete_order.map((value, key) => {
-                        console.log(value);
                         return <option value={value}>{value}</option>;
                       })}
                     </select>

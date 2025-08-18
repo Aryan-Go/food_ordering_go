@@ -21,7 +21,6 @@ const Waiting = () => {
     };
     get_data();
   }, []);
-  console.log("This the result I am getting");
 
   if (data == null || data == undefined) {
     toast.error("No items found thus transefered to payment page", {
@@ -37,7 +36,6 @@ const Waiting = () => {
     });
     navigate(`/payment?order_id=${id}`)
   } else {
-    console.log(data);
     if (data.status_code != undefined) {
       toast.error(data.message, {
         position: "top-center",

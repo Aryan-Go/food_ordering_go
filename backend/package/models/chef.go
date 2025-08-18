@@ -9,7 +9,6 @@ import (
 )
 
 func CompleteOrderItem(order_id int, food_status string, food_id int) bool {
-	fmt.Println(order_id, food_status, food_id)
 	query := "UPDATE ordered_items SET food_status = (?) WHERE order_id = (?) AND food_id = (?);"
 	result, err := DB.Exec(query, food_status, order_id, food_id)
 	if err != nil {
@@ -22,11 +21,9 @@ func CompleteOrderItem(order_id int, food_status string, food_id int) bool {
 			return false
 		}
 		if rowsAffected == 0 {
-			fmt.Println("No rows updated — check if order_id and food_id match an existing row")
 			return false
 		}
 
-		fmt.Println("The data of the food_id is updated in order_id")
 		return true
 	}
 }
@@ -42,7 +39,6 @@ func CompleteOrder(order_id int) bool {
 		counter2 := 0
 		var food_item structures.Food_added
 		for result.Next() {
-			fmt.Println("I am in")
 			counter1++
 			err := result.Scan(&food_item.Id, &food_item.Quant, &food_item.Instruct, &food_item.Order_id, &food_item.Food_status)
 			if err != nil {
@@ -66,7 +62,6 @@ func CompleteOrder(order_id int) bool {
 				defer result.Close()
 				return false
 			} else {
-				fmt.Println("This order is completed in order table")
 			}
 		}
 	}
@@ -75,7 +70,6 @@ func CompleteOrder(order_id int) bool {
 }
 
 func FindChefId(email string) int {
-	fmt.Println("Find customer id")
 	role := "chef"
 	query := "SELECT * FROM user WHERE role = ? AND email = ?"
 	result, err := DB.Query(query, role, email)
@@ -100,7 +94,6 @@ func FindChefId(email string) int {
 }
 
 func FindChefOrders(id int) []int {
-	fmt.Println("Find chef orders")
 	status := "left"
 	query := "SELECT * FROM order_table WHERE chef_id = ? AND food_status = ?"
 	result, err := DB.Query(query, id, status)

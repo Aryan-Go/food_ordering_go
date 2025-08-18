@@ -28,7 +28,6 @@ const Menu = () => {
     };
     getMenu();
   }, []);
-    console.log(data);
     // const UpdateSpecialInstruct = (id,spex) => {
     //     special_instruc[id-1] = spex
     // }

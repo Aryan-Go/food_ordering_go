@@ -21,7 +21,6 @@ import (
 var users []structures.User
 
 func HomeHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("You are the the main link")
 	var succAPi = structures.Error{
 		Code:    http.StatusAccepted,
 		Message: "Home page",
@@ -151,7 +150,6 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	if models.FindEmail(loginUser.Email) {
 		password, role := models.FindPassword(loginUser.Email)
-		fmt.Println(password, role, loginUser.Password)
 		err = bcrypt.CompareHashAndPassword([]byte(password), []byte(loginUser.Password))
 		if err == nil {
 			jwtToken, err := middlewares.CreateToken(loginUser.Email, role)
@@ -187,9 +185,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 
 func GetidDataSignup(w http.ResponseWriter, r *http.Request) {
 	id := r.PathValue("id")
-	fmt.Println(id)
 	num, errr := strconv.Atoi(id)
-	fmt.Println(num)
 	if errr != nil {
 		var err structures.Error
 		err.Code = http.StatusBadRequest

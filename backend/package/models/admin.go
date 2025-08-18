@@ -14,7 +14,6 @@ func AddPaymentDetails(price float64, order_id int, customer_id int) {
 	if err != nil {
 		log.Fatal("Some err in adding details in payment table : ", err)
 	} else {
-		fmt.Println("Data added successfully")
 	}
 }
 
@@ -130,7 +129,6 @@ func UpdatePaymentTable(order_id int, customer_id int) {
 	if err != nil {
 		log.Fatal("There is some error in completing the payment : ", err)
 	} else {
-		fmt.Println("The payment is completed")
 	}
 }
 
@@ -142,6 +140,5 @@ func UpdatePaymentId(payment_id int) {
 	if err != nil {
 		log.Fatal("There is some error in completing the payment : ", err)
 	} else {
-		fmt.Println("The payment is completed")
 	}
 }

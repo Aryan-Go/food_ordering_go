@@ -14,7 +14,6 @@ const Order = () => {
     };
     get_data();
   }, []);
-  console.log("This the result I am getting");
 
   if (data == null || data == undefined) {
     return (
@@ -49,7 +48,6 @@ const Order = () => {
       </>
     );
   } else {
-    console.log(data);
     if (data.status_code != undefined) {
       toast.error(data.message, {
         position: "top-center",

@@ -33,7 +33,6 @@ func CompleteOrder(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(err)
 		fmt.Println(err)
 	}
-	fmt.Println(order_id.Order_id, order_id.Food_id)
 	if err != nil {
 		var err structures.Error
 		err.Code = http.StatusBadRequest
@@ -41,7 +40,6 @@ func CompleteOrder(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(err)
 		return
 	}
-	fmt.Println(order_id.Order_id)
 	check_item := models.CompleteOrderItem(order_id.Order_id, "completed", order_id.Food_id)
 	// check_item := models.Complete_order_item(6 , "left" , 1)
 	check_order := models.CompleteOrder(order_id.Order_id)
@@ -69,7 +67,6 @@ func GetChefOrderedItems(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	email := claims["email"].(string)
-	fmt.Println(email)
 	role := claims["role"].(string)
 	if role != "chef" {
 		var err2 structures.Error
@@ -79,11 +76,9 @@ func GetChefOrderedItems(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	chef_id := models.FindChefId(email)
-	fmt.Println(chef_id)
 	incomp_order_id := models.FindChefOrders(chef_id)
 	var food_slices []structures.Food_added
 	for _, value := range incomp_order_id {
-		fmt.Println(value)
 		food_slices = append(food_slices, models.GetOrders(value)...)
 	}
 	if len(food_slices) == 0 {

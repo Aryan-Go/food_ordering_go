@@ -15,7 +15,6 @@ func CustomerToChef(id int) {
 	if err != nil {
 		log.Fatal("There is some problem in converting customer to chef", err)
 	}
-	fmt.Println("The task is done")
 
 }
 
@@ -46,7 +45,6 @@ func GetMenu() []structures.Food {
 }
 
 func FindFreeChef() int {
-	fmt.Println("Find free chef")
 	role := "chef"
 	comp_lef := "left"
 	query := "SELECT * FROM user WHERE role = ? AND NOT EXISTS (SELECT *  FROM  order_table WHERE order_table.food_status = ? AND order_table.chef_id = user.user_id);"
@@ -71,14 +69,12 @@ func FindFreeChef() int {
 }
 
 func AddOrderTable(cutsomer int, status string, chef int) int {
-	fmt.Println("Add order table")
 	query := "INSERT INTO order_table (customer_id , food_status , chef_id) VALUES (?,?,?)"
 	result, err := DB.Exec(query, cutsomer, status, chef)
 	if err != nil {
 		log.Fatal("There is some error in adding data inside order table : ", err)
 		return -1
 	} else {
-		fmt.Println("The data has been added successfully")
 		id, err := result.LastInsertId()
 		if err != nil {
 			log.Fatal("There is some error in getting the order id : ", err)
@@ -89,7 +85,6 @@ func AddOrderTable(cutsomer int, status string, chef int) int {
 	}
 }
 func FindCustomerId(email string) int {
-	fmt.Println("Find customer id")
 	role := "customer"
 	query := "SELECT * FROM user WHERE role = ? AND email = ?"
 	result, err := DB.Query(query, role, email)
@@ -114,7 +109,6 @@ func FindCustomerId(email string) int {
 }
 
 func FindEmailId(email string) bool {
-	fmt.Println("Find customer id")
 	role := "customer"
 	query := "SELECT * FROM user WHERE role = ? AND email = ?"
 	result, err := DB.Query(query, role, email)
@@ -134,14 +128,12 @@ func FindEmailId(email string) bool {
 }
 
 func AddOrderedItems(food_id int, quant int, instructions string, order_id int) {
-	fmt.Println("Add ordered items")
 	food_status := "left"
 	query := "INSERT INTO ordered_items VALUES (?,?,?,?,?)"
 	_, err := DB.Exec(query, food_id, quant, instructions, order_id, food_status)
 	if err != nil {
 		log.Fatal("There is some error in adding data inside the ordered items table : ", err)
 	} else {
-		fmt.Println("The data has been successfully added")
 	}
 }
 

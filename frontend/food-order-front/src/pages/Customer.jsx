@@ -15,7 +15,6 @@ const Customer = () => {
      };
      authent();
    }, []);
-  console.log(data);
   if (data.status_code == 202) {
     
     return (

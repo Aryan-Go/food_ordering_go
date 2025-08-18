@@ -19,7 +19,6 @@ const Signup = () => {
             role: role
         };
         const response = await axios.post("/signup", data)
-        console.log(response.data)
         if (response.data.status_code == 400) {
             toast.error(response.data.message, {
                 position: "top-center",
