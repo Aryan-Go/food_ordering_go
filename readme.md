@@ -18,8 +18,8 @@ To run the main follow the following commands
 $ make run
 ```
 
-To run the tests follow the following commands
+To get help for running the makefile do the following
 ```
-$
+$ make help
 ```
 

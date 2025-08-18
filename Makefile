@@ -93,3 +93,6 @@ apply-migration:
 rollback-migration:
 	@echo "Rolling back migration..."
 	mysql -h $(db_host) -P $(db_port) -u $(db_user) -p$(db_password) $(db_database) < $(DOWN_MIGRATION_FILE)
+
+test:
+	go test -v ./package/middlewares
