@@ -1,7 +1,7 @@
 When I run the following command on my menu ordering route then this is the result I get
 
 ```
-ab -c 1000 -n 100000 http://127.0.0.1:8000/customer/menu
+ab -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImdveWFsLmFyeWFuQGdtYWlsLmNvbSIsImV4cCI6MTc1NTYzMDY4Miwicm9sZSI6ImN1c3RvbWVyIn0.vingHfG0upimFnqBpZtOv__rJpKdXrkvAL7z3KCIPPc" -c 1000 -n 100000 http://127.0.0.1:8000/customer/menu_show
 ```
 
 This is the reult that I get
@@ -29,38 +29,37 @@ Server Software:
 Server Hostname:        127.0.0.1
 Server Port:            8000
 
-Document Path:          /customer/menu
-Document Length:        19 bytes
+Document Path:          /customer/menu_show
+Document Length:        2365 bytes
 
 Concurrency Level:      1000
-Time taken for tests:   3.329 seconds
+Time taken for tests:   3.955 seconds
 Complete requests:      100000
 Failed requests:        0
-Non-2xx responses:      100000
-Total transferred:      29800000 bytes
-HTML transferred:       1900000 bytes
-Requests per second:    30035.79 [#/sec] (mean)
-Time per request:       33.294 [ms] (mean)
-Time per request:       0.033 [ms] (mean, across all concurrent requests)
-Transfer rate:          8740.89 [Kbytes/sec] received
+Total transferred:      258400000 bytes
+HTML transferred:       236500000 bytes
+Requests per second:    25286.58 [#/sec] (mean)
+Time per request:       39.547 [ms] (mean)
+Time per request:       0.040 [ms] (mean, across all concurrent requests)
+Transfer rate:          63809.10 [Kbytes/sec] received
 
 Connection Times (ms)
               min  mean[+/-sd] median   max
-Connect:        0   13  71.9      4    2081
-Processing:     2    4   3.8      4      70
-Waiting:        1    4   3.8      4      70
-Total:          4   18  72.1      8    2085
+Connect:        0   15  51.8      4    2014
+Processing:     0    6   5.8      5      95
+Waiting:        0    6   5.6      5      95
+Total:          0   21  52.3      9    2054
 
 Percentage of the requests served within a certain time (ms)
-  50%      8
-  66%      8
-  75%      9
-  80%      9
-  90%     27
-  95%     39
-  98%     98
-  99%    217
- 100%   2085 (longest request)
+  50%      9
+  66%     11
+  75%     12
+  80%     14
+  90%     40
+  95%     71
+  98%    131
+  99%    220
+ 100%   2054 (longest request)
 
 ```
 

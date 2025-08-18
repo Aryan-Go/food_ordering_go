@@ -3,7 +3,9 @@ package models
 import (
 	"fmt"
 	"log"
+	"time"
 
+	"github/aryan-go/food_ordering_go/cache"
 	"github/aryan-go/food_ordering_go/package/structures"
 )
 
@@ -20,6 +22,11 @@ func CustomerToChef(id int) {
 var menu_data []structures.Food
 
 func GetMenu() []structures.Food {
+	if fetchedItems, ok := cache.AppCache.Get("menu"); ok {
+		fmt.Println("Cache in")
+		return fetchedItems.([]structures.Food)
+	}
+	fmt.Println("Cache out")
 	query := "SELECT * FROM food_menu"
 	result, err := DB.Query(query)
 	if err != nil {
@@ -34,6 +41,7 @@ func GetMenu() []structures.Food {
 		}
 	}
 	defer result.Close()
+	cache.AppCache.Set("menu", menu_data, 24*time.Hour)
 	return menu_data
 }
 
