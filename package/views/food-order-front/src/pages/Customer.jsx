@@ -21,7 +21,7 @@ const Customer = () => {
     return (
       <>
         <Navbar />
-        <div className="h-max bg-[url(customer_home2.webp)] bg-black/50 bg-blend-overlay bg-no-repeat bg-size-[length:100vw_130vh]">
+        <div className="min-h-[100vh] h-max bg-[url(customer_home2.webp)] bg-black/50 bg-blend-overlay bg-no-repeat bg-size-[length:100vw_130vh]">
           <h1 className="font-bold mb-4 text-white dark:text-gray-600  text-center">
             <span className="text-8xl text-transparent bg-clip-text bg-gradient-to-r to-purple-600 from-sky-600">
               Welcome To SERVXPRESS
@@ -74,17 +74,17 @@ const Customer = () => {
               👨‍🍳 As a Customer: At ServeXpress, customers enjoy a seamless and
               personalized food ordering experience. With a wide variety of
               cuisines, easy-to-use interface, real-time tracking, and reliable
-              delivery, users can order their favorite meals with just a few taps.
-              Whether it's a quick lunch or a family dinner, ServeXpress ensures
-              quality food and timely service—every time.
+              delivery, users can order their favorite meals with just a few
+              taps. Whether it's a quick lunch or a family dinner, ServeXpress
+              ensures quality food and timely service—every time.
             </p>
             <p className="font-bold mb-3 text-white dark:text-white text-2xl text-shadow-black">
               🏪 As a Dealer (Chef/Restaurant): ServeXpress empowers local chefs
               and restaurants by providing them a digital platform to reach more
-              customers, manage orders efficiently, and grow their business. From
-              order notifications to performance analytics and customer feedback,
-              dealers get all the tools they need to deliver excellence while
-              focusing on what they do best—cooking great food.
+              customers, manage orders efficiently, and grow their business.
+              From order notifications to performance analytics and customer
+              feedback, dealers get all the tools they need to deliver
+              excellence while focusing on what they do best—cooking great food.
             </p>
           </div>
         </div>

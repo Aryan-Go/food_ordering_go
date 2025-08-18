@@ -20,7 +20,7 @@ const Chef = () => {
      return (
        <>
          <Navbar />
-         <div class="h-max bg-[url(chef_back.jpg)] bg-black/50 bg-blend-overlay bg-no-repeat bg-size-[length:100vw_120vh]">
+         <div class="min-h-[100vh] h-max bg-[url(chef_back.jpg)] bg-black/50 bg-blend-overlay bg-no-repeat bg-size-[length:100vw_120vh]">
            <h1 class="mb-4 font-extrabold text-gray-600 dark:text-gray-600  text-center">
              <span class="text-8xl text-transparent bg-clip-text bg-gradient-to-r to-purple-600 from-sky-400">
                Welcome To SERVXPRESS
