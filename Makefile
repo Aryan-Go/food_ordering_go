@@ -26,7 +26,6 @@ help:
 	@echo "build: Builds the binary of the server"
 	@echo "run: Runs the binary of the server"
 	@echo "dev: Combines build and run commands"
-	@echo "lint: Lints the code using vet and golangci-lint"
 	@echo "format: Formats the code using fmt and golangci-lint"
 	@echo "clean: Removes the vendor directory and binary"
 
@@ -44,16 +43,6 @@ run:
 
 dev:
 	@$(GOPATH_BIN)/air -c .air.toml
-
-install-golangci-lint:
-	@echo "=====> Installing golangci-lint..."
-	@curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | \
-		sh -s -- -b $(GOPATH_BIN) v1.62.2
-
-lint: install-golangci-lint
-	@$(GO) vet $(GO_PACKAGES)
-	@$(GOLANGCI_LINT) run -c golangci.yaml
-	@echo "Lint successful"
 
 install-goimports:
 	@echo "=====> Installing formatter..."
