@@ -23,18 +23,37 @@ const Waiting = () => {
   }, []);
 
   if (data == null || data == undefined) {
-    toast.error("No items found thus transefered to payment page", {
-      position: "top-center",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: false,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "dark",
-      transition: Bounce,
-    });
-    navigate(`/payment?order_id=${id}`)
+    // navigate(`/payment?order_id=${id}`)
+    return (
+      <>
+        {/* <Navbar /> */}
+        <form action="/payment" method="post" className="text-center">
+          <div className="h-[100vh] w-[100vw] bg-[url(waiting_back.webp)] bg-no-repeat bg-size-[length:100%_100%] text-center flex flex-col items-center gap-2rem text-center">
+            <h1 className="text-[6rem] font-bold">Ordered Items</h1>
+            <table className="text-center w-[60vw] m-[4rem] px-[10rem]">
+              <thead>
+                <tr>
+                  <th scope="col" className="text-2xl mx-[2rem]">
+                    Food Items
+                  </th>
+                  <th scope="col" className="text-2xl mx-[2rem]">
+                    Special Instructions
+                  </th>
+                  <th scope="col" className="text-2xl mx-[2rem]">
+                    Quantity Added
+                  </th>
+                  <th scope="col" className="text-2xl mx-[2rem]">
+                    Prepared/left
+                  </th>
+                </tr>
+              </thead>
+            </table>
+            <h1 className="text-2xl text-red-500">There is no data for this order id</h1>
+          </div>
+        </form>
+      </>
+    );
+    navigate(`/payment?order_id=${id}`);
   } else {
     if (data.status_code != undefined) {
       toast.error(data.message, {
