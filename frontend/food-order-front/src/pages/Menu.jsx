@@ -80,13 +80,15 @@ const Menu = () => {
     }
   const menu_table = data.map((value, key) => {
     return (
-      <tr key={key} className="m-[2rem] p-[2rem]">
-        <td className="text-xl font-bold mx-[2rem]">{value.name}</td>
-        <td className="text-xl font-semibold mx-[2rem] ">
+      <tr key={key} className="m-[2rem] p-[2rem] mb-[30rem]">
+        <td className="text-2xl font-bold mx-[2rem] mb-[20rem]">{value.name}</td>
+        <td className="text-xl font-semibold mx-[2rem] w-[25rem] mb-[30rem] p-[2rem]">
           {value.description}
         </td>
-        <td className="text-xl font-bold mx-[2rem]">Rs{value.price}</td>
-        <td className="text-xl font-bold mx-[2rem]">
+        <td className="text-xl font-bold mx-[2rem] p-[2rem] mb-[20rem]">
+          Rs{value.price}
+        </td>
+        <td className="text-xl font-bold mx-[2rem] text-center mb-[20rem]">
           <label htmlFor="quant">Quanity</label>
           <input
             pattern="^[1-9][0-9]*$"
@@ -108,7 +110,7 @@ const Menu = () => {
             hidden
           />
         </td>
-        <td className="text-xl font-bold mx-[2rem]">
+        <td className="text-xl font-bold mx-[2rem] mt-[20rem]">
           <label htmlFor="quant">Special Instructions here</label>
           <br />
           <input
@@ -129,12 +131,14 @@ const Menu = () => {
         id="myForm"
         action="/food_items_added"
         method="post"
-              className="text-center"
-              onSubmit={(e) => {e.preventDefault()}}
+        className="text-center"
+        onSubmit={(e) => {
+          e.preventDefault();
+        }}
       >
-        <div className="h-full w-full bg-[url(menu_back.webp)] bg-no-repeat bg-size-[length:100%_100%] text-center flex flex-col justify-center items-center gap-2rem text-center">
+        <div className="h-full w-full bg-[url(menu_back.webp)] bg-no-repeat bg-size-[length:100%_100%] flex flex-col justify-center items-center gap-2rem text-center">
           <h1 className="text-[6rem] font-bold">Menu</h1>
-          <table className="text-center w-[70vw] m-[4rem] px-[10rem]">
+          <table className="text-center w-[70vw] m-[4rem] px-[10rem] table-auto">
             <thead>
               <tr className="m-[1rem]">
                 <th scope="col" className="text-2xl mx-[2rem]">

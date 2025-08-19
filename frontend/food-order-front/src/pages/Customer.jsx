@@ -20,23 +20,23 @@ const Customer = () => {
     return (
       <>
         <Navbar />
-        <div className="min-h-[100vh] h-max bg-[url(customer_home2.webp)] bg-black/50 bg-blend-overlay bg-no-repeat bg-size-[length:100vw_130vh]">
+        <div className="min-h-[100vh] h-max bg-[url(customer_home2.webp)] bg-black/70 bg-blend-overlay bg-no-repeat bg-size-[length:100vw_130vh] px-[5rem]">
           <h1 className="font-bold mb-4 text-white dark:text-gray-600  text-center">
-            <span className="text-8xl text-transparent bg-clip-text bg-gradient-to-r to-purple-600 from-sky-600">
+            <span className="text-6xl bg-clip-text text-yellow-300">
               Welcome To SERVXPRESS
             </span>
           </h1>
           <h1 className="font-bold text-center mb-4 text-white dark:text-white">
-            <span className="text-5xl text-transparent bg-clip-text bg-gradient-to-r to-purple-600 from-white text-center">
+            <span className="text-3xl text-transparent bg-clip-text text-yellow-300 text-center">
               Better Food Best Services.
             </span>
           </h1>
-          <p className="font-bold text-2xl text-orange-500 dark:text-white text-shadow-black">
+          <p className="font-bold text-xl text-orange-500 dark:text-white text-shadow-black">
             Here at ServeXpress our motive is to provide world classNameic food
             and best services to each customer.
           </p>
-          <h1 className="font-bold text-center mb-4 text-9xl text-white dark:text-white md:text-9xl lg:text-9xl">
-            <span className="text-transparent bg-clip-text bg-gradient-to-r to-purple-600 from-white text-5xl text-center">
+          <h1 className="font-bold text-center mb-4 text-7xl text-white dark:text-white md:text-9xl lg:text-9xl">
+            <span className="text-transparent bg-clip-text text-yellow-300 text-5xl text-center">
               Who are we
             </span>
           </h1>
@@ -58,13 +58,8 @@ const Customer = () => {
               </p>
             </blockquote>
           </div>
-          <p className="font-bold mb-3 text-2xl text-shadow-black ext-orange-500 dark:text-white range-400">
-            Deliver great service experiences fast - without the complexity of
-            traditional delays.Get guarenteed results with delicious food and
-            crazy servics and benifits.
-          </p>
           <h1 className="font-bold text-center mb-4 text-9xl  text-white dark:text-white md:text-9xl lg:text-9xl">
-            <span className="text-transparent bg-clip-text bg-gradient-to-r to-purple-600 from-white text-5xl text-center">
+            <span className="text-transparent bg-clip-text text-yellow-300 text-5xl text-center">
               Different Perspectives
             </span>
           </h1>

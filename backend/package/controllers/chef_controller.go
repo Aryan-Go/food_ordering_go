@@ -3,7 +3,6 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
-
 	"github/aryan-go/food_ordering_go/package/models"
 	"github/aryan-go/food_ordering_go/package/structures"
 

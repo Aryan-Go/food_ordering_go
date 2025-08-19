@@ -2,7 +2,6 @@ package models
 
 import (
 	"database/sql"
-	"fmt"
 	"log"
 
 	"github/aryan-go/food_ordering_go/package/structures"
