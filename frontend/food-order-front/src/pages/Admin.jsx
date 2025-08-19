@@ -57,6 +57,11 @@ const IncompletePayment = (payment_id) => {
         theme: "dark",
         transition: Bounce,
       });
+      if (response.data.message == "Malformed Token") {
+        setTimeout(() => {
+          navigate("/login");
+        }, 2000); 
+      }
     } else {
       toast.success(response.data.message, {
         position: "top-center",

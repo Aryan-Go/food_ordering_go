@@ -1,7 +1,24 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
-
+import { NavLink, useNavigate } from "react-router-dom";
+import { toast, Bounce } from "react-toastify";
 const Navbar = () => {
+  const navigate = useNavigate()
+  const handleLogout = () => {
+       localStorage.clear();
+         toast.success("Logout successful", {
+           position: "top-right",
+           autoClose: 5000,
+           hideProgressBar: true,
+           closeOnClick: false,
+           pauseOnHover: true,
+           draggable: true,
+           progress: undefined,
+           theme: "dark",
+         });
+         setTimeout(() => {
+           navigate("/login");
+         }, 2000); 
+     };
   return (
     <nav className="bg-[#e3f2fd] " data-bs-theme="light">
       <div className="container-fluid flex flex-row justify-between">
@@ -22,7 +39,7 @@ const Navbar = () => {
             Home
           </NavLink>
           <NavLink href="/logout">
-            <button type="button" className="text-[1.2rem] btn btn-primary font-bold bg-blue-400 p-[0.5rem] rounded-xl">
+            <button type="button" className="text-[1.2rem] btn btn-primary font-bold bg-blue-400 p-[0.5rem] rounded-xl" onClick={handleLogout}>
               Logout
             </button>
           </NavLink>

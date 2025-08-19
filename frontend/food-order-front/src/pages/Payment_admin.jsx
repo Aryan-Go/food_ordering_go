@@ -35,6 +35,11 @@ const Payment = () => {
       theme: "dark",
       transition: Bounce,
     });
+    if (data.message == "Malformed Token") {
+      setTimeout(() => {
+        navigate("/login");
+      }, 2000);
+    }
   } else {
     return (
       <>

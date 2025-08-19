@@ -63,6 +63,18 @@ const Menu = () => {
             theme: "dark",
             transition: Bounce,
           });
+          if (data.message == "Malformed Token") {
+            setTimeout(() => {
+              navigate("/login");
+            }, 2000);
+          } else if (
+            data.message ==
+            "This is a protected route where only customer is allowed"
+          ) {
+            setTimeout(() => {
+              navigate(-1);
+            }, 2000);
+          }
         } else {
           toast.success("Your order is = " + response.data.message, {
             position: "top-center",

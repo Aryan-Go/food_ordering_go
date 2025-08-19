@@ -67,6 +67,11 @@ const Waiting = () => {
         theme: "dark",
         transition: Bounce,
       });
+      if (data.message == "Malformed Token") {
+        setTimeout(() => {
+          navigate("/login");
+        }, 2000);
+      }
       navigate(`/payment?order_id=${id}`);
     }
     else {
