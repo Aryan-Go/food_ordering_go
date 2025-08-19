@@ -1,8 +1,8 @@
-import RouteHanlder from "./routes/RouteHanlder.jsx"
+import AppRoutes from "./routes/AppRoutes.jsx"
 function App() {
   return (
     <>
-      <RouteHanlder />
+      <AppRoutes />
     </>
   )
 }

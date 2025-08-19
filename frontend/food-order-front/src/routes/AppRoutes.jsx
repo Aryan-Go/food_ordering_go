@@ -11,7 +11,7 @@ import Admin from "../pages/Admin.jsx"
 import Payment from "../pages/Payment.jsx"
 import Payment_admin from "../pages/Payment_admin.jsx"
 
-const RouteHanlder = () => {
+const AppRoutes = () => {
   return (
     <Routes>
       <Route path="/" element={<Signup />} />
@@ -30,4 +30,4 @@ const RouteHanlder = () => {
     
 }
 
-export default RouteHanlder
+export default AppRoutes
