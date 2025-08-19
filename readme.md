@@ -50,3 +50,13 @@ frontend = 5173
 backend = 8000
 database = 3306
 ```
+For checking the admin and chef side the following are the details
+```
+email : chef@gmail.com
+password : chef
+```
+
+```
+email : admin@gmail.com
+password : admin
+```
