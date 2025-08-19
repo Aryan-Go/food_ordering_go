@@ -134,7 +134,7 @@ const Order = () => {
                       {value.food_name}
                     </td>
                     <td className="text-xl font-semibold mx-[2rem]">
-                      {value.instructions}
+                      {value.instructions == "" ? "None" : value.instructions}
                     </td>
                     <td className="text-xl font-bold mx-[2rem]">
                       {value.quant}

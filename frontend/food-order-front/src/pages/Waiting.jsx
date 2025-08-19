@@ -74,41 +74,41 @@ const Waiting = () => {
         <>
           {/* <Navbar /> */}
           <form action="/payment" method="post" className="text-center">
-            <div className="h-[100vh] w-[100vw] bg-[url(waiting_back.webp)] bg-no-repeat bg-size-[length:100%_100%] text-center flex flex-col items-center gap-2rem text-center">
-              <h1 className="text-[6rem] font-bold">Ordered Items</h1>
-              <table className="text-center w-[60vw] m-[4rem] px-[10rem]">
+            <div className="h-[100vh] w-[100vw] bg-[url(waiting_back2.png)] backdrop-brightness-150 bg-no-repeat bg-size-[length:100%_100%] text-center flex flex-col items-center gap-2rem text-center">
+              <h1 className="text-[5rem] pb-[2rem] font-bold">Ordered Items</h1>
+              <table className="text-center w-[70vw] m-[4rem] px-[10rem] backdrop-blur-xs">
                 <thead>
                   <tr>
-                    <th scope="col" className="text-2xl mx-[2rem]">
+                    <th scope="col" className="text-3xl mx-[2rem]">
                       Food Items
                     </th>
-                    <th scope="col" className="text-2xl mx-[2rem]">
+                    <th scope="col" className="text-3xl mx-[2rem]">
                       Special Instructions
                     </th>
-                    <th scope="col" className="text-2xl mx-[2rem]">
+                    <th scope="col" className="text-3xl mx-[2rem]">
                       Quantity Added
                     </th>
-                    <th scope="col" className="text-2xl mx-[2rem]">
+                    <th scope="col" className="text-3xl mx-[2rem]">
                       Prepared/left
                     </th>
                   </tr>
                 </thead>
                 <tbody>
                   {data.map((value, key) => (
-                      <tr key={key}>
-                        <td className="text-xl font-bold mx-[2rem]">
-                          {value.food_name}
-                        </td>
-                        <td className="text-xl font-semibold mx-[2rem]">
-                          {value.instructions}
-                        </td>
-                        <td className="text-xl font-bold mx-[2rem]">
-                          {value.quant}
-                        </td>
-                        <td className="text-xl font-bold mx-[2rem]">
-                          {value.status}
-                        </td>
-                      </tr>
+                    <tr key={key}>
+                      <td className="text-2xl font-bold mx-[2rem]">
+                        {value.food_name}
+                      </td>
+                      <td className="text-2xl font-semibold mx-[2rem]">
+                        {value.instructions == "" ? "None" : value.instructions}
+                      </td>
+                      <td className="text-2xl font-bold mx-[2rem]">
+                        {value.quant}
+                      </td>
+                      <td className="text-2xl font-bold mx-[2rem]">
+                        {value.status}
+                      </td>
+                    </tr>
                   ))}
                 </tbody>
               </table>
