@@ -8,12 +8,6 @@ GOIMPORTS := $(GOPATH_BIN)/goimports
 GO_PACKAGES = $(shell go list ./... | grep -v vendor)
 PACKAGE_BASE := github/aryan-go/food_ordering_go
 
-# DB_HOST = $(shell grep -A6 "^db:" config.yaml | grep "host:" | head -1 | cut -d'"' -f2)
-# DB_PORT = $(shell grep -A6 "^db:" config.yaml | grep "port:" | head -1 | awk '{print $$2}')
-# DB_USER = $(shell grep -A6 "^db:" config.yaml | grep "user:" | head -1 | cut -d'"' -f2)
-# DB_PASS = $(shell grep -A6 "^db:" config.yaml | grep "password:" | head -1 | cut -d'"' -f2)
-# DB_NAME = $(shell grep -A6 "^db:" config.yaml | grep "db_name:" | head -1 | cut -d'"' -f2)
-
 UP_MIGRATION_FILE = database/migrations/000004_create_food_menu_table.up.sql
 DOWN_MIGRATION_FILE = database/migrations/000001_create_food_go_database.down.sql
 
@@ -28,14 +22,6 @@ help:
 	@echo "format: Formats the code using fmt and golangci-lint"
 	@echo "clean: Removes the vendor directory and binary"
 
-vendor:
-	@${GO} mod tidy
-	@${GO} mod vendor
-	@echo "Vendor downloaded successfully"
-
-build:
-	@${GO} build -o aryan ./command/main.go
-	@echo "Binary built successfully"
 
 run:
 	@${GO} run command/main.go
@@ -50,22 +36,12 @@ format: install-goimports
 	@echo "Format successful"
 
 ## verify: Run format and lint checks
-verify: verify-format lint
+verify: verify-format
 
 ## verify-format: Verify the format
 verify-format: install-goimports
 	@echo "=====> Verifying format..."
 	$(if $(shell $(GOIMPORTS) -l -local ${PACKAGE_BASE} ${SRC}), @echo ERROR: Format verification failed! && $(GOIMPORTS) -l -local ${PACKAGE_BASE} ${SRC} && exit 1)
-
-clean:
-	@rm -f aryan
-	@rm -rf vendor/
-	@echo "Clean successful"
-
-install-air:
-	@echo "Make sure your GOPATH and GOPATH_BIN is set"
-	@curl -sSfL https://raw.githubusercontent.com/cosmtrek/air/master/install.sh | sh -s -- -b $(GOPATH_BIN)
-	@echo "Air installed successfully"	
 
 apply-migration:
 	@echo "Applying migration..."

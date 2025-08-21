@@ -44,7 +44,7 @@ The link for backend is
 http://127.0.0.1:8000/
 ```
 
-The porsts info is as follows
+The ports info is as follows
 ```
 frontend = 5173
 backend = 8000

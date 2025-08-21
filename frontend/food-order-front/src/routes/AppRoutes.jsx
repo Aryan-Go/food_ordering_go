@@ -10,6 +10,7 @@ import Order from "../pages/Order.jsx"
 import Admin from "../pages/Admin.jsx"
 import Payment from "../pages/Payment.jsx"
 import Payment_admin from "../pages/Payment_admin.jsx"
+import ChangeRoles from "../pages/ChangeRoles.jsx";
 
 const AppRoutes = () => {
   return (
@@ -22,7 +23,9 @@ const AppRoutes = () => {
       <Route path="/menu" element={<Menu />} />
       <Route path="/waiting_page" element={<Waiting />} />
       <Route path="/order" element={<Order />} />
-      <Route path="/admin" element={<Admin />} />
+      <Route path="/change_roles" element={<ChangeRoles />} />
+      {/* <Route path="/menu_edit" element={<MenuEdit />} /> */}
+      {/* <Route path="/order_pay" element={<OrderPay />} /> */}
       <Route path="/payment" element={<Payment />} />
       <Route path="/payment_admin" element={<Payment_admin />} />
     </Routes>

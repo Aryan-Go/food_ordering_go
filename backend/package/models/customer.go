@@ -18,6 +18,15 @@ func CustomerToChef(id int) {
 
 }
 
+func CustomerToAdmin(id int) {
+	query := "UPDATE user SET role = (?) WHERE user_id = (?)"
+	_, err := DB.Query(query, "admin", id)
+	if err != nil {
+		log.Fatal("There is some problem in converting customer to chef", err)
+	}
+
+}
+
 var menu_data []structures.Food
 
 func GetMenu() []structures.Food {

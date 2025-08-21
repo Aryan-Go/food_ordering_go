@@ -8,7 +8,7 @@ import (
 
 // ? Here we will create functions to crud datatabase for the user
 
-var users_data []structures.Get_user
+
 
 func AddUsers(email string, name string, password string, role string) (int, error) {
 	query := "INSERT INTO user (email,username,password,role) VALUES (?,?,?,?)"
@@ -26,6 +26,7 @@ func AddUsers(email string, name string, password string, role string) (int, err
 }
 
 func GetAllUsers() []structures.Get_user {
+	var users_data []structures.Get_user
 	query := "SELECT * FROM user"
 	result, err := DB.Query(query)
 	if err != nil {

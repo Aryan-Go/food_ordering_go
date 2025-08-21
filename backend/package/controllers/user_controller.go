@@ -118,8 +118,9 @@ func SignupHandler(w http.ResponseWriter, r *http.Request) {
 
 func GetUsersData(w http.ResponseWriter, r *http.Request) {
 	users := models.GetAllUsers()
+	w.Header().Set("Content-Type", "application/json")
 	if len(users) != 0 {
-		err := json.NewEncoder(w).Encode(&users)
+		err := json.NewEncoder(w).Encode(users)
 		if err != nil {
 			var errorAPi = structures.Error{
 				Code:    http.StatusBadRequest,
@@ -128,6 +129,7 @@ func GetUsersData(w http.ResponseWriter, r *http.Request) {
 			json.NewEncoder(w).Encode(errorAPi)
 			return
 		}
+		return
 	}
 	var err structures.Error
 	err.Code = http.StatusBadRequest

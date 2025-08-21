@@ -98,22 +98,38 @@ func AdminConvertChef(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(err)
 		return
 	}
-	for key, value := range Customer_chef_arr {
-		if value == info.Id {
-			models.CustomerToChef(value)
-			Customer_chef_arr = append(Customer_chef_arr[:key], Customer_chef_arr[key+1:]...)
-			var succ = structures.Error{
-				Code:    http.StatusAccepted,
-				Message: "The customer is successfully converted into chef",
-			}
-			json.NewEncoder(w).Encode(succ)
-			return
-		}
+	models.CustomerToChef(info.Id)
+	var succ = structures.Error{
+		Code:    http.StatusAccepted,
+		Message: "The customer is successfully converted into chef",
 	}
-	var err2 structures.Error
-	err2.Code = http.StatusBadRequest
-	err2.Message = "This customer has not asked for chef conversion"
-	json.NewEncoder(w).Encode(err2)
+	json.NewEncoder(w).Encode(succ)
+}
+
+// func AdminDetails(w http.ResponseWriter, r *http.Request) {
+// 	var details structures.Incomplete
+// 	details.Order_id_order = models.IncompleteOrderId()
+// 	details.Payment_id = models.UnpaidPaymentId()
+// 	details.Customer_chef_id = Customer_chef_arr
+// 	json.NewEncoder(w).Encode(details)
+// }
+
+func AdminConvertAdmin(w http.ResponseWriter, r *http.Request) {
+	var info structures.Customer_id
+	err := json.NewDecoder(r.Body).Decode(&info)
+	if err != nil {
+		var err structures.Error
+		err.Code = http.StatusBadRequest
+		err.Message = "Please send a valid input"
+		json.NewEncoder(w).Encode(err)
+		return
+	}
+	models.CustomerToAdmin(info.Id)
+	var succ = structures.Error{
+		Code:    http.StatusAccepted,
+		Message: "The customer is successfully converted into admin",
+	}
+	json.NewEncoder(w).Encode(succ)
 }
 
 func AdminCompletePaymemt(w http.ResponseWriter, r *http.Request) {
