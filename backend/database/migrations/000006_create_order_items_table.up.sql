@@ -1,5 +1,5 @@
-use food_go
-CREATE TABLE ordered_items(
+use food_go;
+CREATE TABLE IF NOT EXISTS ordered_items(
 	food_id INT NOT NULL,
     quantity INT NOT NULL,
     special_instructions VARCHAR(400),

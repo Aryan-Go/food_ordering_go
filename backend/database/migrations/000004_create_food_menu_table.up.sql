@@ -1,5 +1,5 @@
-use food_go
-CREATE TABLE food_menu(
+use food_go;
+CREATE TABLE IF NOT EXISTS food_menu(
 	food_id INT PRIMARY KEY AUTO_INCREMENT,
     food_name VARCHAR(200) NOT NULL,
     description VARCHAR(400),

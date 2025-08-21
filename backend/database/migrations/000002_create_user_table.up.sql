@@ -1,5 +1,5 @@
-use food_go
-CREATE TABLE user(
+use food_go;
+CREATE TABLE IF NOT EXISTS user(
     user_id INT PRIMARY KEY AUTO_INCREMENT,
     email VARCHAR(200) NOT NULL ,
     username VARCHAR(300),

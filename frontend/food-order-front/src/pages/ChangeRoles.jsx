@@ -143,7 +143,7 @@ const ChangeRoles = () => {
   return (
     <div>
       <Navbar />
-      <div className="h-full w-full bg-[url(user_background.jpg)] bg-no-repeat bg-size-[length:100%_100%] flex flex-col justify-center items-center gap-2rem text-center">
+      <div className="min-h-screen h-full w-full bg-[url(user_background.jpg)] bg-no-repeat bg-size-[length:100%_100%] flex flex-col justify-center items-center gap-2rem text-center">
         <h1 className="text-[6rem] font-bold">User details</h1>
         <table className="text-center w-[70vw] m-[4rem] px-[10rem] table-auto">
           <thead>

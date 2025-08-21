@@ -1,5 +1,5 @@
-use food_go
-CREATE TABLE payment_table(
+use food_go;
+CREATE TABLE IF NOT EXISTS payment_table(
 	total_price DECIMAL,
     tip DECIMAL,
     payment_status ENUM('completed','left') NOT NULL,

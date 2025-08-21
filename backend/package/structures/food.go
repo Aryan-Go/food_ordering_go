@@ -16,8 +16,8 @@ type Complete_item struct {
 }
 
 type Incomplete struct {
-	Order_id_order   []int `json:"incomplete_order"`
-	Payment_id       []int `json:"incomplete_payment"`
+	Order_id_order   []Order `json:"incomplete_order"`
+	Payment_id       []Payment_table `json:"incomplete_payment"`
 	Customer_chef_id []int `json:"chef_customer"`
 }
 

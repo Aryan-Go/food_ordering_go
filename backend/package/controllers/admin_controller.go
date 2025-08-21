@@ -132,8 +132,38 @@ func AdminConvertAdmin(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(succ)
 }
 
-func AdminCompletePaymemt(w http.ResponseWriter, r *http.Request) {
-	var info structures.Order_id
+// func AdminCompletePaymemt(w http.ResponseWriter, r *http.Request) {
+// 	var info structures.Order_id
+// 	err := json.NewDecoder(r.Body).Decode(&info)
+// 	if err != nil {
+// 		var err structures.Error
+// 		err.Code = http.StatusBadRequest
+// 		err.Message = "Please send a valid input"
+// 		json.NewEncoder(w).Encode(err)
+// 		return
+// 	}
+// 	var details structures.Incomplete
+// 	details.Payment_id = models.UnpaidPaymentId()
+// 	for _, value := range details.Payment_id {
+// 		if info.Id == value {
+// 			models.UpdatePaymentId(value)
+// 			total_payment, order_id := models.GetPaymentId(value)
+// 			var details structures.Payment_details_admin
+// 			details.Final_payment = total_payment
+// 			details.Order_id = order_id
+// 			json.NewEncoder(w).Encode(details)
+// 			return
+
+// 		}
+// 	}
+// 	var err2 structures.Error
+// 	err2.Code = http.StatusBadRequest
+// 	err2.Message = "This is the incorrect the payment id or it is paid"
+// 	json.NewEncoder(w).Encode(err2)
+// }
+
+func MenuEdit(w http.ResponseWriter, r *http.Request) {
+	var info structures.Food
 	err := json.NewDecoder(r.Body).Decode(&info)
 	if err != nil {
 		var err structures.Error
@@ -142,22 +172,9 @@ func AdminCompletePaymemt(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(err)
 		return
 	}
-	var details structures.Incomplete
-	details.Payment_id = models.UnpaidPaymentId()
-	for _, value := range details.Payment_id {
-		if info.Id == value {
-			models.UpdatePaymentId(value)
-			total_payment, order_id := models.GetPaymentId(value)
-			var details structures.Payment_details_admin
-			details.Final_payment = total_payment
-			details.Order_id = order_id
-			json.NewEncoder(w).Encode(details)
-			return
-
-		}
-	}
-	var err2 structures.Error
-	err2.Code = http.StatusBadRequest
-	err2.Message = "This is the incorrect the payment id or it is paid"
-	json.NewEncoder(w).Encode(err2)
+	models.EditMenu(info.Name , info.Desc , info.Price , info.Category_id)
+	var succ structures.Error
+	succ.Code = http.StatusAccepted
+	succ.Message = "The data has been successfully added in menu"
+	json.NewEncoder(w).Encode(succ)
 }

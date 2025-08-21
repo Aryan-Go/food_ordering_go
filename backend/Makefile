@@ -48,12 +48,14 @@ apply-migration:
 	@echo "DB_HOST: $(db_host)"
 	@echo "DB_PORT: $(db_port)"
 	@echo "DB_USER: $(db_user)"
-	@echo "DB_PASS: $(db_password)"
-	mysql -h $(db_host) -P $(db_port) -u $(db_user) -p$(db_password) < $(UP_MIGRATION_FILE)
+# 	@echo "DB_PASS: $(db_password)"
+	@echo "DB_NAME: $(db_name)"
+	@echo "MIGRATIONS_DIR: $(MIGRATIONS_DIR)"
+	migrate -path $(MIGRATIONS_DIR) -database "mysql://$(db_user):$(db_password)@tcp($(db_host):$(db_port))/$(db_name)" up
 
 rollback-migration:
 	@echo "Rolling back migration..."
-	mysql -h $(db_host) -P $(db_port) -u $(db_user) -p$(db_password) $(db_database) < $(DOWN_MIGRATION_FILE)
+	migrate -path $(MIGRATIONS_DIR) -database "mysql://$(db_user):$(db_password)@tcp($(db_host):$(db_port))/$(db_name)" down
 
 test:
 	go test -v ./package/middlewares

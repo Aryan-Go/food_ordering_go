@@ -1,5 +1,5 @@
-use food_go
-CREATE TABLE order_table(
+use food_go;
+CREATE TABLE IF NOT EXISTS order_table(
 	order_id INT PRIMARY KEY auto_increment,
     customer_id INT NOT NULL,
     food_status ENUM('completed','left') NOT NULL,

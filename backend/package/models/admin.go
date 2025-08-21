@@ -16,6 +16,14 @@ func AddPaymentDetails(price float64, order_id int, customer_id int) {
 	}
 }
 
+func EditMenu(name string, desc string, price float64, category_id int) {
+	query := "INSERT INTO food_menu (food_name,description,price,category_id) VALUES (?,?,?,?)"
+	_, err := DB.Exec(query, name, desc, price, category_id)
+	if err != nil {
+		log.Fatal("Some err in adding details in menu table : ", err)
+	}
+}
+
 func FindPayment(quant []int, food_id []int) float64 {
 	var total_price float64 = 0
 	for i := 0; i < len(quant); i++ {
@@ -58,12 +66,11 @@ func FindTotalPayment(order_id int, customer_id int) float64 {
 	return details.Total_price
 }
 
-func IncompleteOrderId() []int {
-	status := "left"
-	query := "SELECT * FROM order_table WHERE food_status=?"
-	var ids []int
+func IncompleteOrderId() []structures.Order {
+	query := "SELECT * FROM order_table"
+	var ids []structures.Order 
 	var orderdetails structures.Order
-	result, err := DB.Query(query, status)
+	result, err := DB.Query(query)
 	if err != nil {
 		log.Fatal("There is some error in getting the required details")
 	} else {
@@ -72,7 +79,7 @@ func IncompleteOrderId() []int {
 			if err != nil {
 				log.Fatal("There is some error in scanning the details for incomplete order id")
 			} else {
-				ids = append(ids, orderdetails.Order_id)
+				ids = append(ids, orderdetails)
 			}
 		}
 	}
@@ -80,10 +87,9 @@ func IncompleteOrderId() []int {
 	return ids
 }
 
-func UnpaidPaymentId() []int {
-	status := "left"
-	query := "SELECT * FROM payment_table WHERE payment_status=?"
-	var ids []int
+func UnpaidPaymentId() []structures.Payment_table {
+	query := "SELECT * FROM payment_table"
+	var ids []structures.Payment_table
 	var details structures.Payment_table
 	result, err := DB.Query(query, status)
 	if err != nil {
@@ -94,7 +100,7 @@ func UnpaidPaymentId() []int {
 			if err != nil {
 				log.Fatal("There is some error in scanning details for payment : ", err)
 			} else {
-				ids = append(ids, details.Payment_id)
+				ids = append(ids, details)
 			}
 		}
 	}
